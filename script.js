@@ -303,16 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update initialCapital and previousBalance with the new value
         initialCapital = parseFloat(document.getElementById('initialCapital').value);
         previousBalance = initialCapital;
-    
+
         // Handle NaN values if needed
         if (isNaN(initialCapital)) {
             initialCapital = 0; // or any default value you deem appropriate
             previousBalance = 0;
         }
-    
+
         // Immediate calculation for the first row
         updateChanges();  // This ensures immediate update for the first row
-    
+
         // Debounced calculations for the rest
         debounceCalculations();
         debounceAutosave();
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateRisk();
     updateRRatio();
     updatePips();
-    
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////FUNCTIONALITY
@@ -420,11 +420,32 @@ document.addEventListener('DOMContentLoaded', () => {
         changeSaveButtonBorderColor('#030101'); // or replace 'initial' with any specific color
     });
 
-    // Attach event listeners to each checkbox
+    // Attach 'change' event listeners to each checkbox
     document.querySelectorAll('.checklist-item').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
             // Toggle the 'checked' class on the corresponding 'span' element
             this.nextElementSibling.classList.toggle('checked', this.checked);
+        });
+    });
+
+    // Attach 'keydown' event listeners to each label
+    document.querySelectorAll('label').forEach(label => {
+        label.addEventListener('keydown', function (event) {
+            if (event.key === ' ' || event.code === 'Space') {
+                // Prevent the default action of the spacebar
+                event.preventDefault();
+
+                // Find the checkbox within the label
+                let checkbox = label.querySelector('.checklist-item');
+
+                // Toggle the checkbox state
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+
+                    // Manually trigger the change event on the checkbox
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            }
         });
     });
 
