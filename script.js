@@ -299,8 +299,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Event listener attachment
     document.getElementById('initialCapital').addEventListener('input', () => {
+        // Update initialCapital and previousBalance with the new value
+        initialCapital = parseFloat(document.getElementById('initialCapital').value);
+        previousBalance = initialCapital;
+    
+        // Handle NaN values if needed
+        if (isNaN(initialCapital)) {
+            initialCapital = 0; // or any default value you deem appropriate
+            previousBalance = 0;
+        }
+    
+        // Immediate calculation for the first row
+        updateChanges();  // This ensures immediate update for the first row
+    
+        // Debounced calculations for the rest
         debounceCalculations();
         debounceAutosave();
     });
