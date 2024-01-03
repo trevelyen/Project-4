@@ -70,7 +70,7 @@ h1 {
 .stats-box {
     width: 250px;
     height: 200px;
-    background-color: #13364b62;
+    background: linear-gradient(to bottom, rgba(4, 8, 31, 0.219), rgba(2, 2, 46, 0.363));
     border: 1px solid #04171f;
     border-radius: 50px;
     display: flex;
