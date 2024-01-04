@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             autosavePopup.style.opacity = 0;
             setTimeout(() => autosavePopup.style.display = 'none', 500); // Wait for fade-out to complete
-        }, 1000); // Duration to show the popup
+        }, 300); // Duration to show the popup
 
         console.log('Data autosaved to localStorage');
         changeSaveButtonBorderColor('#8b0909');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Debounce function to delay execution
     function debounceAutosave() {
         clearTimeout(autosaveTimeout);
-        autosaveTimeout = setTimeout(autosave, 3000); // Trigger autosave after 2 seconds of inactivity
+        autosaveTimeout = setTimeout(autosave, 3000); // Trigger autosave after miliseconds of inactivity
     }
 
     // Debounce function for calculations
@@ -105,6 +105,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Collect images
+        document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
+            // Adjusting index to start from 1
+            let dataIndex = `screenshot${index + 1}`;
+            let images = cell.querySelectorAll('img');
+            data[dataIndex] = [];
+            images.forEach(img => {
+                data[dataIndex].push(img.src); // Store the Base64 string
+            });
+        });
 
         // For datetime-local inputs
         document.querySelectorAll('.entry-container input[type="datetime-local"]').forEach(input => {
@@ -140,6 +150,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 element.value = data[key];
             }
         }
+        // Populate images
+        document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
+            // Adjusting index to match your data and ID naming convention
+            let dataIndex = `screenshot${index + 1}`;
+
+            if (data[dataIndex]) {
+                // Clear any existing content in the cell
+                cell.innerHTML = '';
+
+                // Populate with images
+                data[dataIndex].forEach(base64 => {
+                    let img = new Image();
+                    img.src = base64;
+                    cell.appendChild(img);
+                });
+            }
+        });
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////CALCULATIONS
@@ -395,11 +423,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveButton.style.borderColor = '#030101'; // Replace '#030101' with the original border color
             }
 
-            // Also clear any stored data if needed
-            localStorage.removeItem('autosaveData');
+            // Clear images in screenshot cells
+            document.querySelectorAll('.screenshot-cell').forEach(cell => {
+                while (cell.firstChild) {
+                    cell.removeChild(cell.firstChild);
+                }
+            });
 
-            // Optionally, update any dynamic elements that depend on these values
-            updateCheckmarkTooltips();
+            // Other
+            localStorage.removeItem('autosaveData');
+            updateScreenshotCells();
+            updateChecklistTooltips();
         }
     });
 
@@ -553,6 +587,108 @@ document.addEventListener('DOMContentLoaded', () => {
             checklistCell.style.paddingTop = originalPaddingTop;
         }
     }
+    // Paste image to screenshot cell
+    document.querySelectorAll('.screenshot-cell').forEach(cell => {
+        cell.addEventListener('paste', function (event) {
+            event.preventDefault(); // Prevent the default paste action
+
+            var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (var index in items) {
+                var item = items[index];
+                if (item.kind === 'file') {
+                    var blob = item.getAsFile();
+                    var reader = new FileReader();
+                    reader.onload = (function (cell) {
+                        return function (event) {
+                            // Clear existing images in the cell
+                            while (cell.firstChild) {
+                                cell.removeChild(cell.firstChild);
+                            }
+
+                            // Create and append the new image
+                            var img = new Image();
+                            img.src = event.target.result;
+                            img.style.width = '100px';  // Set a default size
+                            img.style.height = 'auto';
+                            cell.appendChild(img);
+
+                            // Update the color
+                            updateScreenshotCells();
+                        };
+                    })(cell);  // Pass the correct cell here
+                    reader.readAsDataURL(blob);
+
+                    // Trigger autosave after pasting an image
+                    debounceAutosave();
+
+                    break; // Break the loop after handling the first image
+                }
+            }
+        });
+    });
+
+    function updateScreenshotCells() {
+        document.querySelectorAll('.screenshot-cell').forEach(cell => {
+            const hasImage = cell.querySelector('img') !== null;
+
+            // Toggle 'has-image' class and 'contenteditable' attribute
+            if (hasImage) {
+                cell.classList.add('has-image');
+                cell.setAttribute('contenteditable', 'false');
+                cell.style.cursor = 'default';
+                cell.title = 'Hold CTRL and click the cell to delete';
+            } else {
+                cell.classList.remove('has-image');
+                cell.setAttribute('contenteditable', 'true');
+                cell.style.cursor = 'text';
+            }
+
+        });
+    }
+
+    document.querySelectorAll('.screenshot-cell').forEach(cell => {
+        cell.addEventListener('click', function (event) {
+            // Always show the button press effect
+            this.classList.add('pressed');
+            setTimeout(() => {
+                this.classList.remove('pressed');
+            }, 100); // Duration of the press effect
+
+            // If Ctrl key is pressed and the cell has an image, remove the image
+            if (event.ctrlKey && this.classList.contains('has-image')) {
+                var img = this.querySelector('img');
+                if (img) {
+                    this.removeChild(img);
+                    updateScreenshotCells(); // Update the cell's state
+                }
+            }
+
+            // Open modal if the cell has an image and Ctrl is not pressed
+            if (!event.ctrlKey && this.classList.contains('has-image')) {
+                var img = this.querySelector('img');
+                if (img) {
+                    document.getElementById('modalImage').src = img.src;
+                    document.getElementById('imageModal').style.display = 'flex';
+                }
+            }
+
+        });
+    });
+    document.getElementById('imageModal').addEventListener('click', function() {
+        this.style.display = 'none';
+    });
+    window.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' || event.key === ' ') {
+            event.preventDefault();
+            var imageModal = document.getElementById('imageModal');
+            if (imageModal.style.display === 'flex') {
+                imageModal.style.display = 'none';
+            }
+        }
+    });
+
+    // Update the background color of screenshot cells
+    updateScreenshotCells();
 
 });
 

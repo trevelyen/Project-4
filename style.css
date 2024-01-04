@@ -445,7 +445,9 @@ textarea.expanded {
     text-decoration: none;
     cursor: pointer;
 }
-
+.screenshot-cell img {
+    display: none;
+}
 .screenshot-cell {
     margin-left: 12px;
     margin-bottom: 3px;
@@ -463,16 +465,19 @@ textarea.expanded {
     height: 24px;
 }
 
-.screenshot-cell.button-style:hover {
-    background-color: darkblue; 
+.screenshot-cell.has-image {
+    height: 24px; 
+    background-color: #0794f1; /* Your chosen color */
+    cursor: pointer; 
 }
 
-#screenshotPasteArea1 img {
-    display: none; 
+.screenshot-cell.has-image:hover {
+    background-color: rgb(16, 239, 255);
 }
-.screenshot-cell.button-style.clicked {
-    transform: scale(0.95);
-    transition: transform 0.1s ease;
+
+.screenshot-cell.has-image.pressed {
+    transform: scale(0.75);
+    transition: transform 0.01s ease, background-color 0.01s ease;
 }
 
 .red-text {
@@ -496,4 +501,16 @@ textarea::-webkit-scrollbar {
 textarea {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+}
+
+#imageModal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
