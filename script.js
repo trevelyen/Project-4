@@ -1,170 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////////////////////COLLECT/POPULATE DATA
-let db;
-// Function to collect data
-function collectData() {
-    const data = {};
-
-    // For text inputs, number inputs, etc.
-    document.querySelectorAll('.entry-container input[type="text"], .entry-container input[type="number"], .entry-container textarea').forEach(input => {
-        data[input.name] = input.value;
-    });
-
-    // Collect tooltip texts for checklist items
-    for (let i = 1; i <= 5; i++) {
-        const input = document.getElementById(`clInput${i}`);
-        if (input) {
-            data[`tooltip${i}`] = input.value;
-        }
-    }
-
-    // Collecting data from checklist inputs
-    for (let i = 1; i <= 5; i++) {
-        const checklistInput = document.getElementById(`clInput${i}`);
-        if (checklistInput) {
-            data[`checklstcl${i}`] = checklistInput.value;
-        }
-    }
-
-    // Collect images
-    document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
-        let dataIndex = `screenshot${index + 1}`;
-        let images = cell.querySelectorAll('img');
-        data[dataIndex] = [];
-        images.forEach(img => {
-            data[dataIndex].push(img.src);
-        });
-    });
-
-    // For datetime-local inputs
-    document.querySelectorAll('.entry-container input[type="datetime-local"]').forEach(input => {
-        data[input.name] = input.value;
-    });
-
-    // Collect state for all checkboxes
-    document.querySelectorAll('.entry-container .checklist-item').forEach(checkbox => {
-        data[checkbox.name] = { checked: checkbox.checked, clickState: checkbox.dataset.clickState };
-    });
-
-    // Collect state for all checkboxes
-    document.querySelectorAll('.checklist-item').forEach(checkbox => {
-        data[checkbox.name] = checkbox.checked;
-    });
-
-    return data;
-}
-
-// Function to retrieve data
-function populateForm(data) {
-    console.log("Populating form with data:", data);
-    for (const key in data) {
-        const element = document.querySelector(`[name="${key}"]`);
-        if (!element) continue;
-
-        if (element.type === 'checkbox') {
-            // Set the checked state for checkboxes
-            element.checked = data[key];
-            // Update the corresponding checkmark class
-            element.nextElementSibling.classList.toggle('checked', data[key]);
-        } else {
-            // Set the value for other types of elements
-            element.value = data[key];
-        }
-    }
-
-    // Populate images
-    document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
-        let dataIndex = `screenshot${index + 1}`;
-
-        // Clear any existing content in the cell
-        cell.innerHTML = '';
-        cell.classList.remove('has-image');
-        cell.setAttribute('contenteditable', 'true');
-
-        if (data[dataIndex] && data[dataIndex].length > 0) {
-            data[dataIndex].forEach(base64 => {
-                let img = new Image();
-                img.src = base64;
-                img.style.width = '100px';
-                img.style.height = 'auto';
-                cell.appendChild(img);
-            });
-            cell.classList.add('has-image');
-            cell.setAttribute('contenteditable', 'false');
-        }
-    });
-    // Call updateScreenshotCells at the end
-    updateScreenshotCells();
-}
-
-function loadAutosavedData() {
-    const transaction = db.transaction(["autosaveData"], "readonly");
-    const store = transaction.objectStore("autosaveData");
-    const request = store.get("autosave");
-
-    request.onsuccess = function (event) {
-        const data = event.target.result;
-        if (data) {
-            console.log("Loaded data:", data.data);
-            populateForm(data.data);
-            updateScreenshotCells();
-        }
-    };
-
-    request.onerror = function (event) {
-        console.error("Error loading data from IndexedDB:", event.target.errorCode);
-    };
-
-}
-
-function updateScreenshotCells() {
-    document.querySelectorAll('.screenshot-cell').forEach(cell => {
-        const hasImage = cell.querySelector('img') !== null;
-
-        // Toggle 'has-image' class and 'contenteditable' attribute
-        if (hasImage) {
-            cell.classList.add('has-image');
-            cell.setAttribute('contenteditable', 'false');
-            cell.style.cursor = 'default';
-            cell.title = 'Hold CTRL and click the cell to delete';
-        } else {
-            cell.classList.remove('has-image');
-            cell.setAttribute('contenteditable', 'true');
-            cell.style.cursor = 'text';
-        }
-
-    });
-}
-
-function initDB() {
-    const request = indexedDB.open("MyDatabase", 1);
-
-    request.onupgradeneeded = function (event) {
-        db = event.target.result;
-        if (!db.objectStoreNames.contains('autosaveData')) {
-            db.createObjectStore("autosaveData", { keyPath: "id" });
-        }
-    };
-
-    request.onsuccess = function (event) {
-        db = event.target.result;
-        loadAutosavedData(); // Call here after DB initialization
-    };
-
-    request.onerror = function (event) {
-        console.error("IndexedDB error:", event.target.errorCode);
-    };
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
-
     ////////////////////////////////////////////////////////////////////////////////////////////////AUTOSAVE
     // Declarations for functions
     let autosaveTimeout;
     let calculationTimeout;
-    initDB();
-
-    setTimeout(loadAutosavedData, 1000);
 
     // Function to change the Save button's border color
     const saveButton = document.getElementById('saveButton');
@@ -174,29 +12,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Autosave function
     function autosave() {
         const data = collectData();
-        const transaction = db.transaction(["autosaveData"], "readwrite");
-        const store = transaction.objectStore("autosaveData");
-        const request = store.put({ id: "autosave", data: data });
+        localStorage.setItem('autosaveData', JSON.stringify(data));
 
-        request.onsuccess = function () {
-            console.log('Data autosaved to IndexedDB');
-            changeSaveButtonBorderColor('#8b0909');
+        // Show autosave popup
+        const autosavePopup = document.getElementById('autosavePopup');
+        autosavePopup.style.display = 'block';
+        autosavePopup.style.opacity = 1;
 
-            // Show autosave popup
-            const autosavePopup = document.getElementById('autosavePopup');
-            autosavePopup.style.display = 'block';
-            autosavePopup.style.opacity = 1;
-            setTimeout(() => {
-                autosavePopup.style.opacity = 0;
-                setTimeout(() => autosavePopup.style.display = 'none', 500); // Wait for fade-out to complete
-            }, 300); // Duration to show the popup
-        };
+        // Hide popup after a delay
+        setTimeout(() => {
+            autosavePopup.style.opacity = 0;
+            setTimeout(() => autosavePopup.style.display = 'none', 500); // Wait for fade-out to complete
+        }, 300); // Duration to show the popup
 
-        request.onerror = function (event) {
-            console.error("Error saving data to IndexedDB:", event.target.errorCode);
-        };
+        console.log('Data autosaved to localStorage');
+        changeSaveButtonBorderColor('#8b0909');
+
     }
-
 
     // Debounce function to delay execution
     function debounceAutosave() {
@@ -241,7 +73,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////COLLECT/POPULATE DATA
+    // Load autosaved data
+    const savedData = localStorage.getItem('autosaveData');
+    if (savedData) {
+        populateForm(JSON.parse(savedData));
+    }
 
+    // Function to collect data
+    function collectData() {
+        const data = {};
+
+        // For text inputs, number inputs, etc.
+        document.querySelectorAll('.entry-container input[type="text"], .entry-container input[type="number"], .entry-container textarea').forEach(input => {
+            data[input.name] = input.value;
+        });
+
+        // Collect tooltip texts for checklist items
+        for (let i = 1; i <= 5; i++) {
+            const input = document.getElementById(`clInput${i}`);
+            if (input) {
+                data[`tooltip${i}`] = input.value;
+            }
+        }
+
+        // Collecting data from checklist inputs
+        for (let i = 1; i <= 5; i++) {
+            const checklistInput = document.getElementById(`clInput${i}`);
+            if (checklistInput) {
+                data[`checklstcl${i}`] = checklistInput.value;
+            }
+        }
+
+        // Collect images
+        document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
+            // Adjusting index to start from 1
+            let dataIndex = `screenshot${index + 1}`;
+            let images = cell.querySelectorAll('img');
+            data[dataIndex] = [];
+            images.forEach(img => {
+                data[dataIndex].push(img.src); // Store the Base64 string
+            });
+        });
+
+        // For datetime-local inputs
+        document.querySelectorAll('.entry-container input[type="datetime-local"]').forEach(input => {
+            data[input.name] = input.value;
+        });
+
+        // Collect state for all checkboxes
+        document.querySelectorAll('.entry-container .checklist-item').forEach(checkbox => {
+            data[checkbox.name] = { checked: checkbox.checked, clickState: checkbox.dataset.clickState };
+        });
+
+        // Collect state for all checkboxes
+        document.querySelectorAll('.checklist-item').forEach(checkbox => {
+            data[checkbox.name] = checkbox.checked;
+        });
+
+        return data;
+    }
+
+    // Function to retrieve data
+    function populateForm(data) {
+        for (const key in data) {
+            const element = document.querySelector(`[name="${key}"]`);
+            if (!element) continue;
+
+            if (element.type === 'checkbox') {
+                // Set the checked state for checkboxes
+                element.checked = data[key];
+                // Update the corresponding checkmark class
+                element.nextElementSibling.classList.toggle('checked', data[key]);
+            } else {
+                // Set the value for other types of elements
+                element.value = data[key];
+            }
+        }
+        // Populate images
+        document.querySelectorAll('.screenshot-cell').forEach((cell, index) => {
+            // Adjusting index to match your data and ID naming convention
+            let dataIndex = `screenshot${index + 1}`;
+
+            if (data[dataIndex]) {
+                // Clear any existing content in the cell
+                cell.innerHTML = '';
+
+                // Populate with images
+                data[dataIndex].forEach(base64 => {
+                    let img = new Image();
+                    img.src = base64;
+                    cell.appendChild(img);
+                });
+            }
+        });
+
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////CALCULATIONS
     // Declarations for functions
@@ -700,6 +627,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    function updateScreenshotCells() {
+        document.querySelectorAll('.screenshot-cell').forEach(cell => {
+            const hasImage = cell.querySelector('img') !== null;
+
+            // Toggle 'has-image' class and 'contenteditable' attribute
+            if (hasImage) {
+                cell.classList.add('has-image');
+                cell.setAttribute('contenteditable', 'false');
+                cell.style.cursor = 'default';
+                cell.title = 'Hold CTRL and click the cell to delete';
+            } else {
+                cell.classList.remove('has-image');
+                cell.setAttribute('contenteditable', 'true');
+                cell.style.cursor = 'text';
+            }
+
+        });
+    }
+
     document.querySelectorAll('.screenshot-cell').forEach(cell => {
         cell.addEventListener('click', function (event) {
             // Always show the button press effect
@@ -728,10 +674,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
     });
-    document.getElementById('imageModal').addEventListener('click', function () {
+    document.getElementById('imageModal').addEventListener('click', function() {
         this.style.display = 'none';
     });
-    window.addEventListener('keydown', function (event) {
+    window.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' || event.key === ' ') {
             event.preventDefault();
             var imageModal = document.getElementById('imageModal');
