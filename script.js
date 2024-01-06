@@ -678,10 +678,10 @@ document.addEventListener('DOMContentLoaded', () => {
         this.style.display = 'none';
     });
     window.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' || event.key === ' ') {
-            event.preventDefault();
-            var imageModal = document.getElementById('imageModal');
-            if (imageModal.style.display === 'flex') {
+        var imageModal = document.getElementById('imageModal');
+        if (imageModal.style.display === 'flex') {
+            if (event.key === 'Escape' || event.key === ' ') {
+                event.preventDefault();
                 imageModal.style.display = 'none';
             }
         }
