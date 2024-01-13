@@ -508,10 +508,20 @@ document.querySelectorAll('#initial-capital, input[name^="entry-"], input[name^=
 document.getElementById('clear-button').addEventListener('click', function () {
     if (confirm("Are you sure? All data will be lost!")) {
         clearIndexedDB();
+        resetAllSnipCells();
     } else {
         console.log("Database clear canceled by user.");
     }
 });
+
+function resetAllSnipCells() {
+    document.querySelectorAll('.image-paste-area').forEach(cell => {
+        cell.removeAttribute('title'); // Remove the tooltip
+        cell.style.backgroundColor = ''; // Reset the background color
+        cell.innerHTML = ''; // Optional: Clear the content of the cell
+    });
+}
+
 
 function clearIndexedDB() {
     let transaction = db.transaction(['rows'], 'readwrite');
