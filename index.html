@@ -17,11 +17,30 @@
         
         <section id="entry-container">
             <div id="imageModal" class="modal"><img class="modal-content" id="imgInModal"></div>
+            <div id="editModal" class="modal">
+                <div class="editModal-content">
+                    <span class="close" style="display: none;">&times;</span>
+                    <h2>checklist</h2>
+                    <form id="tooltip-form">
+                        <label for="tooltip-1">•</label>
+                        <input type="text" id="tooltip-1" name="tooltip-1" class="tool-class"><br>
+                        <label for="tooltip-2">•</label>
+                        <input type="text" id="tooltip-2" name="tooltip-2" class="tool-class"><br>
+                        <label for="tooltip-3">•</label>
+                        <input type="text" id="tooltip-3" name="tooltip-3" class="tool-class"><br>
+                        <label for="tooltip-4">•</label>
+                        <input type="text" id="tooltip-4" name="tooltip-4" class="tool-class"><br>
+                        <label for="tooltip-5">•</label>
+                        <input type="text" id="tooltip-5" name="tooltip-5" class="tool-class"><br>
+                        <!--<button type="button" id="save-tooltips">save</button>-->
+                    </form>
+                </div>
+            </div>
             <div id="button-container">
                 <div id="menu-container">
                     <button class="option-button" id="open-button">open</button>
                     <button class="option-button" id="clear-button">clear</button>
-                    <!--<button class="option-button" id="edit-button">edit</button>-->
+                    <button class="option-button" id="edit-button">edit</button>
                     <button class="option-button" id="save-button">save</button>
                     <input type="file" id="file-input" style="display: none;" accept=".tj">
                 </div>

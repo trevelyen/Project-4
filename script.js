@@ -728,3 +728,21 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsText(file);
     });
 });
+
+        // JavaScript to open the modal
+        document.getElementById('edit-button').addEventListener('click', function() {
+            document.getElementById('editModal').style.display = 'block';
+        });
+
+        // JavaScript to close the modal on clicking 'X'
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('editModal').style.display = 'none';
+        });
+
+        // JavaScript to close the modal on clicking outside
+        window.onclick = function(event) {
+            var modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }

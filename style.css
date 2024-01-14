@@ -353,7 +353,7 @@ label:focus {
     height: 18px;
     vertical-align: middle;
     border-radius: 5px;
-    
+
 }
 
 
@@ -431,6 +431,76 @@ textarea.expanded {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.7);
     margin-top: 5%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
+}
+
+#editModal {
+    background: #02132750;
+}
+
+.editModal-content {
+    width: 11%;
+    max-height: 60%;
+    margin: auto;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(9, 28, 70, 0.507);
+    margin-top: 5%;
+    border-radius: 20px;
+    padding: 10px;
+    color: #bfd4cdc0;
+
+    @supports (backdrop-filter: blur(10px)) {
+        background-color: rgba(255, 255, 255, 0.01);
+        backdrop-filter: blur(3px);
+    }
+}
+
+#tooltip-form {
+    margin-top: 4%;
+    margin-left: 10px;
+    text-align: right;
+}
+
+#tooltip-form input[type="text"] {
+    width: 80%;
+    background-color: #0c1c3f;
+    border-radius: 4px;
+    border: 0px;
+    color: #216e57;
+    height: 28px;
+}
+
+#tooltip-form input[type="label"] {
+    font-size: smaller;
+}
+
+#tooltip-form label {
+    font-size: smaller;
+    color: #092436;
+}
+
+h2 {
+    margin-left: 7%;
+}
+
+#save-tooltips {
+    background: linear-gradient(to left, rgba(15, 40, 65, 0.055), rgba(5, 17, 41, 0.089));
+    flex: 1;
+    min-width: 30px;
+    width: 80px;
+    max-width: 80px;
+    color: rgb(24, 81, 99);
+    height: 40px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    margin-top:  4%;
+    margin-right: 4%;
+}
+
+.tool-class {
+    margin: 3px;
 }
 
 .modal-content img {
@@ -443,10 +513,10 @@ textarea.expanded {
 
 .close {
     position: absolute;
-    top: 15px;
+    top: 10%;
     right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
+    color: #f1f1f15e;
+    font-size: 20px;
     cursor: pointer;
 }
 
@@ -456,12 +526,12 @@ textarea.expanded {
     text-decoration: none;
     cursor: pointer;
 }
+
 #table-container::-webkit-scrollbar {
     overflow-x: hidden;
 }
 
 @media screen and (max-width: 600px) {
-
     #entry-container,
     #stats-container {
         width: none;
@@ -479,8 +549,10 @@ textarea.expanded {
         width: 100%;
         margin: 5px 0;
     }
+
     #table-container::-webkit-scrollbar {
-        display: none; /* Hide scrollbar in Webkit browsers */
+        display: none;
+        /* Hide scrollbar in Webkit browsers */
     }
 }
 
@@ -518,13 +590,16 @@ textarea.expanded {
         max-width: none;
         margin-top: 50px;
     }
+
     #table-container::-webkit-scrollbar {
-        display: none; /* Hide scrollbar in Webkit browsers */
+        display: none;
+        /* Hide scrollbar in Webkit browsers */
     }
+
     #toggle-button {
         display: none;
     }
-    
+
 }
 
 @media screen and (max-width: 1000px) {
@@ -532,5 +607,15 @@ textarea.expanded {
         max-width: none;
         margin-top: 50px;
     }
-    
+
+}
+
+@media screen and (max-width: 1900px) {
+    #table-container {
+        max-width: none;
+        margin-top: 50px;
+    }
+    .editModal-content {
+        width: 20%;
+    }
 }
