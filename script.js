@@ -805,3 +805,31 @@ window.onclick = function (event) {
         modal.style.display = "none";
     }
 }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltips = document.querySelectorAll('.tool-class');
+
+        // Function to update the checklist titles
+        function updateChecklistTitles() {
+            const rows = document.querySelectorAll('#data-table .data-row');
+            rows.forEach(row => {
+                const checklistLabels = row.querySelectorAll('.checklist label');
+                tooltips.forEach((tooltip, index) => {
+                    if (checklistLabels[index]) {
+                        checklistLabels[index].title = tooltip.value;
+                    }
+                });
+            });
+        }
+
+        // Delay in milliseconds (e.g., 2000ms = 2 seconds)
+        const delay = 2000;
+
+        // Wait for the specified delay, then update titles
+        setTimeout(updateChecklistTitles, delay);
+
+        // Update titles on input change
+        tooltips.forEach((tooltip) => {
+            tooltip.addEventListener('input', updateChecklistTitles);
+        });
+    });
