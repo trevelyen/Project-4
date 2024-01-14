@@ -10,7 +10,7 @@ body {
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(to right, rgba(1, 1, 29, 0.336), rgba(2, 38, 68, 0.336));
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.336), rgba(0, 1, 2, 0.336));
 }
 
 header {
@@ -32,7 +32,7 @@ h1 {
     background: linear-gradient(to right, rgba(2, 17, 48, 0.479), rgba(0, 0, 0, 0.877));
     display: flex;
     padding: 10px;
-    height: calc(100% - 6em);
+    height: calc(100% - 7em);
 
 }
 
@@ -50,6 +50,8 @@ h1 {
     overflow-x: hidden;
     transition: width 0.5s ease;
     margin-right: 10px;
+    will-change: width;
+    transform: translateZ(0);
 }
 
 #button-container {
@@ -136,7 +138,7 @@ label[for="initial-capital"] {
 
 #table-container {
     overflow-y: auto;
-    overflow-x: auto;
+    overflow-x: hidden;
     max-height: 96%;
     color: rgba(107, 139, 139, 0.39);
 }
@@ -160,7 +162,7 @@ label[for="initial-capital"] {
 }
 
 #data-table th {
-    border: 1px solid #dddddd07;
+    border: 1px solid #dddddd00;
     text-align: center;
     padding: 11px;
     color: rgba(240, 255, 255, 0.39);
@@ -176,8 +178,7 @@ label[for="initial-capital"] {
     background: linear-gradient(to left, rgba(15, 40, 65, 0.034), rgba(5, 17, 41, 0.089));
     color: rgba(137, 179, 179, 0.671);
     height: 25px;
-    width: 90%;
-    padding-left: 10px;
+    width: 100%;
     text-align: center;
 }
 
@@ -222,7 +223,7 @@ label[for="initial-capital"] {
 }
 
 #data-table th:nth-child(7) {
-    width: 30px;
+    width: 50px;
 }
 
 #data-table th:nth-child(13) {
@@ -259,20 +260,21 @@ label[for="initial-capital"] {
 }
 
 .image-paste-area {
-    border: 1px solid #cccccc0c;
+    border: 1px solid #cccccc05;
     border-radius: 7px;
     min-height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    user-select: none;
-    background-color: rgba(10, 12, 43, 0.637);
+    caret-color: transparent;
+    background-color: rgba(10, 18, 43, 0.329);
 }
 
 .image-paste-area:focus {
-    border: 1px solid #cccccc42;
+    outline: 1px solid #007bff52;
 }
+
 .image-paste-area img {
     max-width: 100%;
     height: auto;
@@ -404,12 +406,10 @@ textarea.expanded {
     resize: none;
     margin-right: 10px;
 }
-
-.modal {
+#imageModal {
     display: flex;
     justify-content: center;
     align-items: center;
-    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -419,17 +419,39 @@ textarea.expanded {
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.9);
 }
-
-.modal-content {
-    scale: 60%;
-    position: fixed;
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 50%;
-    height: 50%;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10%;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
 }
+
+.modal-content {
+    max-width: 60%;
+    max-height: 60%;
+    margin: auto;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    margin-top: 5%;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+}
+
 
 .close {
     position: absolute;

@@ -177,10 +177,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function resize(e) {
-        const newEntryWidth = e.clientX - mainContainer.offsetLeft;
-        entryContainer.style.width = `${newEntryWidth}px`;
+        requestAnimationFrame(function() {
+            const newEntryWidth = e.clientX - mainContainer.offsetLeft;
+            entryContainer.style.width = `${newEntryWidth}px`;
+        });
     }
-
     function stopResize() {
         window.removeEventListener('mousemove', resize);
     }
@@ -285,7 +286,7 @@ document.querySelectorAll('.image-paste-area').forEach(area => {
                 reader.onload = (e) => {
                     area.innerHTML = `<img src="${e.target.result}" alt="Pasted Image">`;
                     // Change the background color as soon as the image is inserted
-                    area.style.backgroundColor = '#ADD8E6'; // Example color, change as needed
+                    area.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
                 };
                 reader.readAsDataURL(blob);
             }
@@ -506,7 +507,7 @@ document.querySelectorAll('#initial-capital, input[name^="entry-"], input[name^=
 
 
 document.getElementById('clear-button').addEventListener('click', function () {
-    if (confirm("Are you sure? All data will be lost!")) {
+    if (confirm("All data will be lost?!")) {
         clearIndexedDB();
         resetAllSnipCells();
     } else {
@@ -611,8 +612,8 @@ function addTooltipToCellsContainingImages() {
             if (data.snip && data.snip.includes('<img')) {
                 let cell = document.querySelector(`div[name="snip-${data.id}"]`);
                 if (cell) {
-                    cell.setAttribute('title', 'Hold Ctrl and click to erase image');
-                    cell.style.backgroundColor = '#ADD8E6'; // Example color, change as needed
+                    cell.setAttribute('title', 'ctrl and click to erase image');
+                    cell.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
                 }
             }
             cursor.continue();
@@ -636,7 +637,7 @@ function setBackgroundColorForImageCells() {
             if (data.snip && data.snip.includes('<img')) {
                 let cell = document.querySelector(`div[name="snip-${data.id}"]`);
                 if (cell) {
-                    cell.style.backgroundColor = '#ADD8E6'; // Example color, change as needed
+                    cell.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
                 }
             }
             cursor.continue();
