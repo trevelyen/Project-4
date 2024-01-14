@@ -17,6 +17,10 @@ function openDatabase() {
         console.log("Database opened successfully");
         loadData();
         addTooltipToCellsContainingImages();
+        // Load each tooltip data
+        for (let i = 1; i <= 5; i++) {
+            loadTooltip(`tooltip-${i}`);
+        }
     };
 
     request.onerror = function (event) {
@@ -158,9 +162,49 @@ function saveInitialCapital() {
 // Attach event listener to the initial capital input
 document.getElementById('initial-capital').addEventListener('change', saveInitialCapital);
 
+function saveTooltip(tooltipId) {
+    let tooltipValue = document.getElementById(tooltipId).value;
 
+    let transaction = db.transaction(['rows'], 'readwrite');
+    let store = transaction.objectStore('rows');
 
+    let tooltipData = {
+        id: tooltipId,
+        value: tooltipValue
+    };
 
+    store.put(tooltipData);
+    console.log("Saving tooltip data:", tooltipId, tooltipValue);
+}
+// Assuming your tooltip inputs have IDs 'tooltip-1' to 'tooltip-5'
+for (let i = 1; i <= 5; i++) {
+    let tooltipInput = document.getElementById(`tooltip-${i}`);
+    tooltipInput.addEventListener('change', function () {
+        saveTooltip(tooltipInput.id);
+    });
+}
+function loadTooltip(tooltipId) {
+    let transaction = db.transaction(['rows'], 'readonly');
+    let store = transaction.objectStore('rows');
+    let request = store.get(tooltipId);
+
+    request.onsuccess = function () {
+        let data = request.result;
+        if (data) {
+            let tooltipInput = document.getElementById(data.id);
+            if (tooltipInput) {
+                tooltipInput.value = data.value || '';
+                console.log(`Loaded value for ${data.id}: ${data.value}`);
+            }
+        } else {
+            console.log(`No data found for ${tooltipId}`);
+        }
+    };
+
+    request.onerror = function (event) {
+        console.error(`Error in loading tooltip ${tooltipId}:`, event.target.errorCode);
+    };
+}
 
 
 /////////////////////////////////////////////////////////////////////// Functionality
@@ -655,6 +699,14 @@ function saveDataToFile() {
     let request = store.getAll();
 
     request.onsuccess = function (event) {
+        let allData = event.target.result;
+
+        // Include tooltip data in the file
+        for (let i = 1; i <= 5; i++) {
+            let tooltipValue = document.getElementById(`tooltip-${i}`).value;
+            allData.push({ id: `tooltip-${i}`, value: tooltipValue });
+        }
+
         const jsonData = JSON.stringify(event.target.result);
         const blob = new Blob([jsonData], { type: 'text/json;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -695,6 +747,13 @@ function saveDataToIndexedDB(data) {
     transaction.oncomplete = function () {
         console.log("All data has been reloaded into the database");
         loadData(); // Refresh data in your application's UI
+        // Load tooltip data from the saved file into the inputs
+        for (let i = 1; i <= 5; i++) {
+            const tooltipData = data.find(d => d.id === `tooltip-${i}`);
+            if (tooltipData && tooltipData.value) {
+                document.getElementById(`tooltip-${i}`).value = tooltipData.value;
+            }
+        }
     };
 
     transaction.onerror = function (event) {
@@ -729,20 +788,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-        // JavaScript to open the modal
-        document.getElementById('edit-button').addEventListener('click', function() {
-            document.getElementById('editModal').style.display = 'block';
-        });
+// JavaScript to open the modal
+document.getElementById('edit-button').addEventListener('click', function () {
+    document.getElementById('editModal').style.display = 'block';
+});
 
-        // JavaScript to close the modal on clicking 'X'
-        document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('editModal').style.display = 'none';
-        });
+// JavaScript to close the modal on clicking 'X'
+document.querySelector('.close').addEventListener('click', function () {
+    document.getElementById('editModal').style.display = 'none';
+});
 
-        // JavaScript to close the modal on clicking outside
-        window.onclick = function(event) {
-            var modal = document.getElementById('editModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+// JavaScript to close the modal on clicking outside
+window.onclick = function (event) {
+    var modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
