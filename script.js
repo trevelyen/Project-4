@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function resize(e) {
-        requestAnimationFrame(function() {
+        requestAnimationFrame(function () {
             const newEntryWidth = e.clientX - mainContainer.offsetLeft;
             entryContainer.style.width = `${newEntryWidth}px`;
         });
@@ -630,7 +630,7 @@ function setBackgroundColorForImageCells() {
     let store = transaction.objectStore('rows');
     let request = store.openCursor();
 
-    request.onsuccess = function(event) {
+    request.onsuccess = function (event) {
         let cursor = event.target.result;
         if (cursor) {
             let data = cursor.value;
@@ -644,7 +644,87 @@ function setBackgroundColorForImageCells() {
         }
     };
 
-    request.onerror = function(event) {
+    request.onerror = function (event) {
         console.error("Error reading data from IndexedDB:", event.target.errorCode);
     };
 }
+
+function saveDataToFile() {
+    let transaction = db.transaction(['rows'], 'readonly');
+    let store = transaction.objectStore('rows');
+    let request = store.getAll();
+
+    request.onsuccess = function (event) {
+        const jsonData = JSON.stringify(event.target.result);
+        const blob = new Blob([jsonData], { type: 'text/json;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.tj';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    request.onerror = function (event) {
+        console.error("Error fetching data: ", event.target.errorCode);
+    };
+}
+
+document.getElementById('file-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = JSON.parse(e.target.result);
+        saveDataToIndexedDB(data);
+    };
+
+    reader.readAsText(file);
+});
+
+function saveDataToIndexedDB(data) {
+    const transaction = db.transaction(['rows'], 'readwrite');
+    const store = transaction.objectStore('rows');
+
+    data.forEach(rowData => {
+        store.put(rowData);
+    });
+
+    transaction.oncomplete = function () {
+        console.log("All data has been reloaded into the database");
+        loadData(); // Refresh data in your application's UI
+    };
+
+    transaction.onerror = function (event) {
+        console.error("Error saving data to IndexedDB: ", event.target.error);
+    };
+}
+document.addEventListener('DOMContentLoaded', function () {
+    // Event listener for the save button
+    document.getElementById('save-button').addEventListener('click', saveDataToFile);
+
+    // Event listener for the open button
+    document.getElementById('open-button').addEventListener('click', function () {
+        // Reset the value of the file input to ensure change event fires
+        document.getElementById('file-input').value = '';
+        document.getElementById('file-input').click(); // Trigger the file input
+    });
+
+    // Unified event listener for file input change
+    document.getElementById('file-input').addEventListener('change', function (event) {
+        if (event.target.files.length === 0) {
+            return; // No file selected
+        }
+
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const data = JSON.parse(e.target.result);
+            saveDataToIndexedDB(data);
+        };
+        reader.readAsText(file);
+    });
+});
