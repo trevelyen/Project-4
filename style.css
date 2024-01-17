@@ -19,6 +19,7 @@ header {
     text-align: left;
     height: 5em;
     padding-bottom: 5px;
+    width: 100%;
 }
 
 h1 {
@@ -392,12 +393,16 @@ textarea {
     border: 0px solid #dddddd07;
     text-align: left;
     padding: 1px;
-    border-radius: 30px;
+    border-radius: 10px;
     background: linear-gradient(to left, rgba(15, 40, 65, 0.034), rgba(5, 17, 41, 0.089));
     color: rgba(137, 179, 179, 0.671);
     height: 25px;
     width: 90%;
 }
+textarea {
+    padding: 5px;
+}
+
 
 textarea.expanded {
     width: 100%;
@@ -405,6 +410,7 @@ textarea.expanded {
     overflow: hidden;
     resize: none;
     margin-right: 10px;
+    border-radius: 10px;
 }
 
 .modal {
@@ -558,15 +564,18 @@ h2 {
 
 
 @media screen and (max-width: 1100px) {
+
+    html,
     body {
         overflow-y: auto;
+        overflow-x: hidden;
     }
 
-    body,
+   
     #main-container {
         flex-direction: column;
         height: 2000px;
-        width: 100%;
+
     }
 
     #entry-container,
@@ -583,12 +592,15 @@ h2 {
     }
 
     #table-container-outer {
-        flex-grow: 1
+        flex-grow: 1;
+        width: 93%;
+        border-radius: 30px;
     }
 
     #table-container {
         max-width: none;
         margin-top: 50px;
+        overflow-x: auto;
     }
 
     #table-container::-webkit-scrollbar {
