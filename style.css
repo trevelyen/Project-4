@@ -151,7 +151,8 @@ label[for="initial-capital"] {
     border-collapse: collapse;
     color: rgba(214, 218, 218, 0.39);
     margin-left: 10px;
-    background: linear-gradient(to left, rgba(7, 12, 17, 0.048), rgb(4, 11, 26));
+    background: rgb(4, 11, 26);
+    border-radius: 20px;
 }
 
 #data-table th,
