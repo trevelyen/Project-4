@@ -161,6 +161,7 @@ label[for="initial-capital"] {
     border: 1px solid #dddddd00;
     text-align: left;
     padding: 4px;
+    
 }
 
 #data-table th {
@@ -322,8 +323,8 @@ label[for="initial-capital"] {
 .checklist {
     display: flex;
     gap: 5px;
-    margin-left: 2px;
-    margin-top: 7px;
+    margin-left: 0px;
+    margin-top: 12px;
 }
 
 .checkmark {
@@ -333,6 +334,7 @@ label[for="initial-capital"] {
     background-color: rgba(16, 95, 141, 0.096);
     border-radius: 4px;
     margin-top: 6px;
+
     vertical-align: middle;
     transition: background-color 0.3s ease;
 }
@@ -406,7 +408,7 @@ textarea {
 
 
 textarea.expanded {
-    width: 100%;
+    width: 90%;
     height: 220px;
     overflow: hidden;
     resize: none;
