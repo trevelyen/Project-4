@@ -864,10 +864,10 @@ const chart = LightweightCharts.createChart(chartContainer,
 
 // Create a line series
 const lineSeries = chart.addAreaSeries({
-    topColor: 'rgba(13, 87, 206, 0.84)',
-    bottomColor: 'rgba(1, 14, 35, 0.04)',
+    topColor: 'rgba(13, 87, 206, 0.0)',
+    bottomColor: 'rgba(13, 87, 206, 0)',
     lineColor: 'rgb(21, 146, 209)',
-    lineWidth: 3,
+    lineWidth: 2,
 });
 
 chart.timeScale().applyOptions({
@@ -911,8 +911,8 @@ lineSeries.priceScale().applyOptions({
     borderVisible: false,
     visible: false,
     scaleMargins: {
-        top: 0.09,    
-        bottom: 0.09, 
+        top: 0.02,    
+        bottom: 0.0, 
     },
 });
 
