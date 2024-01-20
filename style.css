@@ -284,7 +284,6 @@ label[for="initial-capital"] {
     display: none;
 }
 
-
 #data-table input[type="number"]::-webkit-inner-spin-button,
 #data-table input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
