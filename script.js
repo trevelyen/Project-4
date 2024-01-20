@@ -367,13 +367,15 @@ document.getElementById('imgInModal').addEventListener('click', function () {
     modal.style.display = "none";
 });
 
-// Close the modal if the user clicks anywhere outside of the modal image
-window.onclick = function (event) {
-    const modal = document.getElementById('imageModal');
-    if (event.target === modal) {
+// Close the modal if the user clicks on the modal image or the black background
+const modal = document.getElementById('imageModal');
+const modalImg = document.getElementById('imgInModal');
+
+modal.onclick = function (event) {
+    if (event.target === modal || event.target === modalImg) {
         modal.style.display = "none";
     }
-}
+};
 
 // Close the modal with Esc key or Space key
 document.addEventListener('keydown', function (event) {
@@ -844,12 +846,15 @@ const chart = LightweightCharts.createChart(chartContainer,
         width: chartContainer.clientWidth,
         height: chartContainer.clientHeight,
         layout: {
-            background: { color: '#222' },
+            background: { color: '#01091d' },
             textColor: '#DDD',
         },
         grid: {
             vertLines: { color: '#44444400' },
-            horzLines: { color: '#444' },
+            horzLines: { color: '#44444400' },
+        },
+        timeScale: {
+            visible: false,
         },
     }
 );
@@ -893,6 +898,12 @@ lineSeries.applyOptions({
     lastValueVisible: false,
     priceLineVisible: false,
 });
+
+lineSeries.priceScale().applyOptions({
+    borderVisible: false,
+    visible: false,
+});
+
 
 document.addEventListener('initialCapitalSaved', () => {
     const dates = [];

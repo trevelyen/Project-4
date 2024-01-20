@@ -225,17 +225,17 @@ label[for="initial-capital"] {
 }
 
 #data-table th:nth-child(4) {
-    width: 35px;
+    width: 70px;
 }
 
 #data-table th:nth-child(5) {
-    width: 35px;
+    width: 50px;
 }
 #data-table th:nth-child(6) {
-    width: 60px;
+    width: 50px;
 }
 #data-table th:nth-child(7) {
-    width: 20px;
+    width: 50px;
 }
 
 #data-table th:nth-child(8) {
@@ -322,7 +322,7 @@ label[for="initial-capital"] {
 
 
 #table-container::-webkit-scrollbar {
-    height: 0; /* Hide horizontal scrollbar */
+    height: 0;
     width: 10px;
 }
 
@@ -455,6 +455,13 @@ textarea.expanded {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
 }
 
+.modal-content img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+}
+
 #editModal {
     background: #02132750;
 }
@@ -524,14 +531,6 @@ h2 {
     margin: 3px;
 }
 
-.modal-content img {
-    max-width: 100%;
-    max-height: 100%;
-    height: auto;
-    width: auto;
-}
-
-
 .close {
     position: absolute;
     top: 10%;
@@ -570,22 +569,20 @@ h2 {
 
 #equity-container {
     width: 90%;
-    height: 50%;
-    flex-grow: 1;
-    background-color: #222;
-    border-radius: 20px;
+    height: 20vw;
+    background-color: #01091d;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 10px;
-    margin-left: 5px;
 }
 
 #chart-container {
     width: 90%;
-    height: 90%;
+    height: 100%;
     position: relative;
-    background-color: #222;
+    background-color: #01091d;
 }
 
 @media screen and (max-width: 600px) {
@@ -609,7 +606,6 @@ h2 {
 
     #table-container::-webkit-scrollbar {
         display: none;
-        /* Hide scrollbar in Webkit browsers */
     }
 }
 
@@ -656,7 +652,6 @@ h2 {
 
     #table-container::-webkit-scrollbar {
         display: none;
-        /* Hide scrollbar in Webkit browsers */
     }
 
     #toggle-button {
