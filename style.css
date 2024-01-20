@@ -250,8 +250,11 @@ label[for="initial-capital"] {
 #data-table th:nth-child(11) {
     width: 60px;
 }
+#data-table th:nth-child(12) {
+    width: 80px;
+}
 #data-table th:nth-child(13) {
-    min-width: 60px;
+    width: 60px;
 }
 
 #data-table th:nth-child(14) {

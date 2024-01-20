@@ -555,6 +555,7 @@ document.getElementById('clear-button').addEventListener('click', function () {
     if (confirm("All data will be lost?!")) {
         clearIndexedDB();
         resetAllSnipCells();
+        lineSeries.setData([]);
     } else {
         console.log("Database clear canceled by user.");
     }
@@ -836,6 +837,63 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+
+const chartContainer = document.getElementById('chart-container');
+const chart = LightweightCharts.createChart(chartContainer,
+    {
+        width: chartContainer.clientWidth,
+        height: chartContainer.clientHeight,
+        layout: {
+            background: { color: '#222' },
+            textColor: '#DDD',
+        },
+        grid: {
+            vertLines: { color: '#44444400' },
+            horzLines: { color: '#444' },
+        },
+    }
+);
+
+// Create a line series
+const lineSeries = chart.addLineSeries();
+
+chart.timeScale().applyOptions({
+    timeVisible: true,
+});
+
+// ResizeObserver to handle container size changes
+const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+        if (entry.target === chartContainer) {
+            chart.applyOptions({
+                width: chartContainer.clientWidth,
+                height: chartContainer.clientHeight,
+            });
+            chart.timeScale().fitContent();
+        }
+    }
+});
+
+resizeObserver.observe(chartContainer);
+
+const myPriceFormatter = p => {
+    if (p >= 1000) {
+        return (p / 1000).toFixed(0) + 'k';
+    }
+    return p.toFixed(0);
+};
+
+chart.applyOptions({
+    localization: {
+        priceFormatter: myPriceFormatter,
+    },
+});
+
+lineSeries.applyOptions({
+    lastValueVisible: false,
+    priceLineVisible: false,
+});
+
 document.addEventListener('initialCapitalSaved', () => {
     const dates = [];
     const balanceValues = [];
@@ -854,68 +912,11 @@ document.addEventListener('initialCapitalSaved', () => {
                 balanceValues.push(balanceValue);
             }
         }
-    });    
-
-    const chartContainer = document.getElementById('chart-container');
-    const chart = LightweightCharts.createChart(chartContainer,
-        {
-            width: chartContainer.clientWidth,
-            height: chartContainer.clientHeight,
-            layout: {
-                background: { color: '#222' },
-                textColor: '#DDD',
-            },
-            grid: {
-                vertLines: { color: '#44444400' },
-                horzLines: { color: '#444' },
-            },
-        }
-    );
-
-    // Create a line series
-    const lineSeries = chart.addLineSeries();
+    });
 
     // Prepare and set the data
     const chartData = balanceValues.map((value, index) => ({ time: dates[index], value }));
 
-    chart.timeScale().applyOptions({
-        timeVisible: true,
-    });
-
     lineSeries.setData(chartData);
     chart.timeScale().fitContent();
-
-    // ResizeObserver to handle container size changes
-    const resizeObserver = new ResizeObserver(entries => {
-        for (let entry of entries) {
-            if (entry.target === chartContainer) {
-                chart.applyOptions({
-                    width: chartContainer.clientWidth,
-                    height: chartContainer.clientHeight,
-                });
-                chart.timeScale().fitContent();
-            }
-        }
-    });
-
-    resizeObserver.observe(chartContainer);
-
-    const myPriceFormatter = p => {
-        if (p >= 1000) {
-            return (p / 1000).toFixed(0) + 'k';
-        }
-        return p.toFixed(0);
-    };
-
-    chart.applyOptions({
-        localization: {
-            priceFormatter: myPriceFormatter,
-        },
-    });
-
-    lineSeries.applyOptions({
-        lastValueVisible: false,
-        priceLineVisible: false,
-    });
-
 });
