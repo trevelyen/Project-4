@@ -226,7 +226,7 @@ label[for="initial-capital"] {
 }
 
 #data-table th:nth-child(7) {
-    width: 50px;
+    width: 20px;
 }
 
 #data-table th:nth-child(13) {
@@ -239,7 +239,7 @@ label[for="initial-capital"] {
 }
 
 #data-table th:nth-child(15) {
-    width: 50px;
+    width: 70px;
 }
 
 #data-table th:nth-child(16) {
