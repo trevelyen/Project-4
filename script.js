@@ -44,7 +44,7 @@ function loadData() {
                 document.getElementById('initial-capital').value = data.value || '';
                 // Delay the event dispatch
                 setTimeout(() => {
-                    let event = new Event('change');
+                    let event = new Event('input');
                     initialCapitalInput.dispatchEvent(event);
                 }, 50); // Delay can be adjusted
             } else {
@@ -161,7 +161,7 @@ function saveInitialCapital() {
 
 
 // Attach event listener to the initial capital input
-document.getElementById('initial-capital').addEventListener('change', saveInitialCapital);
+document.getElementById('initial-capital').addEventListener('input', saveInitialCapital);
 
 function saveTooltip(tooltipId) {
     let tooltipValue = document.getElementById(tooltipId).value;
@@ -432,7 +432,7 @@ function calculateChange() {
 
 // Attach event listeners to balance inputs and initial capital input
 document.querySelectorAll('input[name^="balance-"], #initial-capital').forEach(input => {
-    input.addEventListener('change', calculateChange);
+    input.addEventListener('input', calculateChange);
 });
 
 function calculateRisk() {
@@ -471,7 +471,7 @@ function calculateRisk() {
 
 // Attach event listeners to size, entry, stop inputs, initial capital input, and balance inputs
 document.querySelectorAll('input[name^="size-"], input[name^="entry-"], input[name^="stop-"], #initial-capital, input[name^="balance-"]').forEach(input => {
-    input.addEventListener('change', calculateRisk);
+    input.addEventListener('input', calculateRisk);
 });
 function calculateValues() {
     let initialCapitalInput = document.getElementById('initial-capital');
@@ -499,11 +499,11 @@ function calculateValues() {
                 if (rRatio < 0) {
                     // Losing trade
                     rSpan.textContent = 'loss';
-                    rSpan.style.color = 'red';
+                    rSpan.style.color = '#f58c755c';
                 } else {
                     // Winning trade
                     rSpan.textContent = rRatio.toFixed(1);
-                    rSpan.style.color = 'green';
+                    rSpan.style.color = '#0a9e0a';
                 }
             }
         } else if (rSpan) {
@@ -521,7 +521,7 @@ function calculateValues() {
 
 // Attach event listeners to entry, exit, stop inputs, initial capital input, and balance inputs
 document.querySelectorAll('input[name^="entry-"], input[name^="exit-"], input[name^="stop-"], #initial-capital, input[name^="balance-"]').forEach(input => {
-    input.addEventListener('change', calculateValues);
+    input.addEventListener('input', calculateValues);
 });
 
 function calculateDifference() {
@@ -549,7 +549,7 @@ function calculateDifference() {
 
 // Attach event listeners to entry and exit inputs
 document.querySelectorAll('#initial-capital, input[name^="entry-"], input[name^="exit-"]').forEach(input => {
-    input.addEventListener('change', calculateDifference);
+    input.addEventListener('input', calculateDifference);
 });
 
 
@@ -842,7 +842,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const chartContainer = document.getElementById('chart-container');
 const chart = LightweightCharts.createChart(chartContainer,
-    {
+    {   
+        crosshair: {
+            mode:2,
+        },
         width: chartContainer.clientWidth,
         height: chartContainer.clientHeight,
         layout: {
@@ -860,7 +863,12 @@ const chart = LightweightCharts.createChart(chartContainer,
 );
 
 // Create a line series
-const lineSeries = chart.addLineSeries();
+const lineSeries = chart.addAreaSeries({
+    topColor: 'rgba(13, 87, 206, 0.84)',
+    bottomColor: 'rgba(1, 14, 35, 0.04)',
+    lineColor: 'rgb(21, 146, 209)',
+    lineWidth: 3,
+});
 
 chart.timeScale().applyOptions({
     timeVisible: true,
@@ -902,10 +910,15 @@ lineSeries.applyOptions({
 lineSeries.priceScale().applyOptions({
     borderVisible: false,
     visible: false,
+    scaleMargins: {
+        top: 0.09,    
+        bottom: 0.09, 
+    },
 });
 
 
-document.addEventListener('initialCapitalSaved', () => {
+// Function to update chart data
+function updateChartData() {
     const dates = [];
     const balanceValues = [];
     const rows = document.querySelectorAll('.data-row');
@@ -916,7 +929,6 @@ document.addEventListener('initialCapitalSaved', () => {
 
         if (dateInput && balanceInput) {
             const dateValue = new Date(dateInput.value).getTime(); // Convert to Unix timestamp
-            console.log(dateValue);
             const balanceValue = parseFloat(balanceInput.value);
             if (!isNaN(dateValue) && !isNaN(balanceValue)) {
                 dates.push(dateValue / 1000); // Push Unix timestamp in seconds
@@ -927,7 +939,21 @@ document.addEventListener('initialCapitalSaved', () => {
 
     // Prepare and set the data
     const chartData = balanceValues.map((value, index) => ({ time: dates[index], value }));
-
     lineSeries.setData(chartData);
     chart.timeScale().fitContent();
+}
+
+// Event listener for initial capital saved
+document.addEventListener('initialCapitalSaved', updateChartData);
+
+// Event listener for DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial update of chart data
+    updateChartData();
+
+    // Attach event listeners to each balance input field for changes
+    document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
+        input.addEventListener('input', updateChartData);
+    });
 });
+

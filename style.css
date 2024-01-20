@@ -579,10 +579,11 @@ h2 {
 }
 
 #chart-container {
-    width: 90%;
+    width: 93%;
     height: 100%;
     position: relative;
     background-color: #01091d;
+
 }
 
 @media screen and (max-width: 600px) {
