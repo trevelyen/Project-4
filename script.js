@@ -844,9 +844,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const chartContainer = document.getElementById('chart-container');
 const chart = LightweightCharts.createChart(chartContainer,
-    {   
+    {
         crosshair: {
-            mode:2,
+            mode: 2,
         },
         width: chartContainer.clientWidth,
         height: chartContainer.clientHeight,
@@ -913,8 +913,8 @@ lineSeries.priceScale().applyOptions({
     borderVisible: false,
     visible: false,
     scaleMargins: {
-        top: 0.02,    
-        bottom: 0.0, 
+        top: 0.02,
+        bottom: 0.0,
     },
 });
 
@@ -952,49 +952,48 @@ document.addEventListener('initialCapitalSaved', updateChartData);
 document.addEventListener('DOMContentLoaded', () => {
     // Initial update of chart data
     updateChartData();
-
+    
     // Attach event listeners to each balance input field for changes
     document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
         input.addEventListener('input', updateChartData);
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                updateAllBackgroundColors();
-            }
-        });
-    });
+function updateBackgroundColor(row) {
+    const entryInput = row.querySelector('[name^="entry"]');
+    const stopInput = row.querySelector('[name^="stop"]');
+    const tickerCell = row.querySelector('[name^="ticker"]');
 
-    const config = { childList: true, subtree: true, attributes: true };
+    const entryValue = entryInput.value.trim();
+    const stopValue = stopInput.value.trim();
 
-    const targetNode = document.querySelector('body'); // or a more specific container of your rows
-    observer.observe(targetNode, config);
+    if (entryValue !== '' && stopValue !== '') {
+        const entry = parseFloat(entryValue);
+        const stop = parseFloat(stopValue);
 
-    function updateBackgroundColor(row) {
-        const entryInput = row.querySelector('[name^="entry"]');
-        const stopInput = row.querySelector('[name^="stop"]');
-        const tickerCell = row.querySelector('[name^="ticker"]');
-
-        const entryValue = entryInput.value.trim();
-        const stopValue = stopInput.value.trim();
-
-        if (entryValue !== '' && stopValue !== '') {
-            const entry = parseFloat(entryValue);
-            const stop = parseFloat(stopValue);
-
-            if (!isNaN(entry) && !isNaN(stop)) {
-                tickerCell.style.backgroundColor = stop > entry ? '#ff00001a' : '#0080001a';
-            }
+        if (!isNaN(entry) && !isNaN(stop)) {
+            tickerCell.style.backgroundColor = stop > entry ? '#ff00001a' : '#0080002e';
         }
     }
+}
 
-    function updateAllBackgroundColors() {
-        document.querySelectorAll('.data-row').forEach(updateBackgroundColor);
-    }
+function addEventListenersToRow(row) {
+    const entryInput = row.querySelector('[name^="entry"]');
+    const stopInput = row.querySelector('[name^="stop"]');
 
-    // Initial update
-    updateAllBackgroundColors();
-});
+    const handleInput = () => updateBackgroundColor(row);
+
+    entryInput.addEventListener('input', handleInput);
+    stopInput.addEventListener('input', handleInput);
+}
+
+function updateAllBackgroundColors() {
+    const rows = document.querySelectorAll('.data-row');
+    rows.forEach(row => {
+        updateBackgroundColor(row);
+        addEventListenersToRow(row);
+    });
+}
+
+// Event listener for initial
+document.addEventListener('initialCapitalSaved', updateAllBackgroundColors);
