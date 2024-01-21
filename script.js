@@ -770,9 +770,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listener for the open button
     document.getElementById('open-button').addEventListener('click', function () {
-        // Reset the value of the file input to ensure change event fires
-        document.getElementById('file-input').value = '';
-        document.getElementById('file-input').click(); // Trigger the file input
+        if (confirm("All data will be lost?!")) {
+            // Reset the value of the file input to ensure change event fires
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-input').click(); // Trigger the file input
+        }
     });
 
     // Unified event listener for file input change
@@ -957,3 +959,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' || mutation.type === 'attributes') {
+                updateAllBackgroundColors();
+            }
+        });
+    });
+
+    const config = { childList: true, subtree: true, attributes: true };
+
+    const targetNode = document.querySelector('body'); // or a more specific container of your rows
+    observer.observe(targetNode, config);
+
+    function updateBackgroundColor(row) {
+        const entryInput = row.querySelector('[name^="entry"]');
+        const stopInput = row.querySelector('[name^="stop"]');
+        const tickerCell = row.querySelector('[name^="ticker"]');
+
+        const entryValue = entryInput.value.trim();
+        const stopValue = stopInput.value.trim();
+
+        if (entryValue !== '' && stopValue !== '') {
+            const entry = parseFloat(entryValue);
+            const stop = parseFloat(stopValue);
+
+            if (!isNaN(entry) && !isNaN(stop)) {
+                tickerCell.style.backgroundColor = stop > entry ? '#ff00001a' : '#0080001a';
+            }
+        }
+    }
+
+    function updateAllBackgroundColors() {
+        document.querySelectorAll('.data-row').forEach(updateBackgroundColor);
+    }
+
+    // Initial update
+    updateAllBackgroundColors();
+});
