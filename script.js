@@ -612,6 +612,8 @@ function resetAllCells() {
     document.querySelectorAll('span').forEach(element => {
         element.textContent = ''; // Or element.innerHTML = ''; if they contain HTML
     });
+
+    updateAllBackgroundColors();
 }
 
 function updateOrDeleteImageDataInIndexedDB(rowId) {
