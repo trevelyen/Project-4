@@ -1006,6 +1006,7 @@ function updateAllBackgroundColors() {
 document.addEventListener('initialCapitalSaved', updateAllBackgroundColors);
 
 document.getElementById('demo-data').addEventListener('click', function () {
+    console.log("Button clicked"); 
     if (confirm("All data will be lost?!")) {
         fetch('data.tj')
         .then(response => response.json())
