@@ -84,7 +84,7 @@ body {
     display: flex;
     -webkit-mask-image: linear-gradient(to bottom, black 95%, transparent);
     mask-image: linear-gradient(to bottom, black 94%, transparent 95%);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
 }
 
 #data-table {
@@ -116,7 +116,11 @@ body {
 }
 
 #stat-container {
+    width: 90%;
     height: 50%;
+    background: linear-gradient(to left, rgba(75, 130, 160, 0.39), rgba(5, 17, 41, 0.308));
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
 }
 
 #equity-container {
@@ -138,7 +142,7 @@ body {
     height: 100%;
     position: relative;
     background-color: #01091d1f;
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(10px);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -315,41 +319,37 @@ label:focus {
     display: block;
     justify-content: center;
     align-items: center;
-    background-color: rgba(9, 28, 70, 0.507);
+    background: linear-gradient(to right, rgba(15, 40, 65, 0.034), rgba(5, 17, 41, 0.39));
     margin-top: 5%;
     border-radius: 20px;
     padding: 10px;
     color: #bfd4cdc0;
+    background-color: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(30px);
 
-    @supports (backdrop-filter: blur(10px)) {
-        background-color: rgba(255, 255, 255, 0.01);
-        backdrop-filter: blur(3px);
-    }
 }
 
 #tooltip-form {
     margin-top: 4%;
     margin-left: 10px;
     text-align: right;
+
 }
 
 #tooltip-form input[type="text"] {
     width: 80%;
-    background-color: #0c1c3f;
-    border-radius: 4px;
+    background: linear-gradient(to left, rgba(15, 40, 65, 0.548), rgba(5, 17, 41, 0.39));
+    border-radius: 10px;
     border: 0px;
     color: #216e57;
     height: 28px;
     margin: 10px;
-}
-
-#tooltip-form input[type="label"] {
-    font-size: smaller;
+    padding-left: 10px;
 }
 
 #tooltip-form label {
-    font-size: smaller;
-    color: #092436;
+    font-size: medium;
+    color: #1385d160;
 }
 
 #data-table th,
@@ -622,7 +622,7 @@ textarea.expanded {
 /* Adjusting for 4k screens */
 @media screen and (min-width: 3840px) {
     #data-table {
-        min-width: 3000px;
+        min-width: 2900px;
     }
 }
 

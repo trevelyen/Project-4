@@ -955,7 +955,7 @@ document.addEventListener('initialCapitalSaved', updateChartData);
 document.addEventListener('DOMContentLoaded', () => {
     // Initial update of chart data
     updateChartData();
-    
+
     // Attach event listeners to each balance input field for changes
     document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
         input.addEventListener('input', updateChartData);
@@ -1004,3 +1004,16 @@ function updateAllBackgroundColors() {
 
 // Event listener for initial
 document.addEventListener('initialCapitalSaved', updateAllBackgroundColors);
+
+document.getElementById('demo-data').addEventListener('click', function () {
+    if (confirm("All data will be lost?!")) {
+        fetch('data.tj')
+        .then(response => response.json())
+        .then(data => {
+            saveDataToIndexedDB(data);
+        })
+        .catch(error => console.error('Error loading demo data:', error));
+    } else {
+        console.log("Demo data loading canceled by user.");
+    }
+});
