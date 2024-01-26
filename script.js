@@ -558,6 +558,7 @@ document.getElementById('clear-button').addEventListener('click', function () {
         clearIndexedDB();
         resetAllSnipCells();
         lineSeries.setData([]);
+        updateAllBackgroundColors();
     } else {
         console.log("Database clear canceled by user.");
     }
@@ -851,7 +852,7 @@ const chart = LightweightCharts.createChart(chartContainer,
         width: chartContainer.clientWidth,
         height: chartContainer.clientHeight,
         layout: {
-            background: { color: '#01091d' },
+            background: { color: '#01091d1f' },
             textColor: '#DDD',
         },
         grid: {
@@ -866,10 +867,10 @@ const chart = LightweightCharts.createChart(chartContainer,
 
 // Create a line series
 const lineSeries = chart.addAreaSeries({
-    topColor: 'rgba(13, 87, 206, 0.0)',
+    topColor: 'rgba(13, 87, 206, 0.3)',
     bottomColor: 'rgba(13, 87, 206, 0)',
     lineColor: 'rgb(21, 146, 209)',
-    lineWidth: 2,
+    lineWidth: 1,
 });
 
 chart.timeScale().applyOptions({
@@ -972,10 +973,14 @@ function updateBackgroundColor(row) {
         const stop = parseFloat(stopValue);
 
         if (!isNaN(entry) && !isNaN(stop)) {
-            tickerCell.style.backgroundColor = stop > entry ? '#ff00001a' : '#0080002e';
+            tickerCell.style.backgroundColor = stop > entry ? '#69020221' : '#0057001a';
         }
+    } else {
+        // Reset the background color when inputs are empty
+        tickerCell.style.backgroundColor = ''; // Reset to default or specify a default color
     }
 }
+
 
 function addEventListenersToRow(row) {
     const entryInput = row.querySelector('[name^="entry"]');
