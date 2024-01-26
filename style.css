@@ -392,8 +392,8 @@ label:focus {
 .span-cell {
     background-color: #0000005b;
     border-radius: 30px;
-    height: 30px;
-    line-height: 30px;
+    height: 25px;
+    line-height: 25px;
 }
 
 #data-table td input:focus {
