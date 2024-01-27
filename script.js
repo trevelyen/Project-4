@@ -80,6 +80,7 @@ function loadData() {
                 }
 
                 cursor.continue();
+                
             }
         };
 
@@ -94,7 +95,6 @@ function loadData() {
     addTooltipToCellsContainingImages();
     setBackgroundColorForImageCells();
 }
-
 
 // Call the function to open the database
 openDatabase();
@@ -286,10 +286,39 @@ document.querySelectorAll('input[type="datetime-local"]').forEach(input => {
 });
 
 
+// Global variable to track the last assigned time
+let lastAssignedTime = null;
+
 function getCurrentDateTime() {
-    const now = new Date();
-    return now.toISOString().substring(0, 16);
+    let now = new Date();
+
+    if (lastAssignedTime) {
+        const lastTime = new Date(lastAssignedTime);
+
+        // Check if now is the same as or before the lastTime
+        if (now <= lastTime || datesAreEqualUpToMinute(lastTime, now)) {
+            // Increment lastTime by one minute
+            lastTime.setMinutes(lastTime.getMinutes() + 1);
+            now = lastTime;
+        }
+    }
+
+    // Update lastAssignedTime with the new time
+    lastAssignedTime = now.toISOString().substring(0, 16);
+
+    // Return formatted datetime up to minutes
+    return lastAssignedTime;
 }
+
+function datesAreEqualUpToMinute(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate() &&
+           date1.getHours() === date2.getHours() &&
+           date1.getMinutes() === date2.getMinutes();
+}
+
+
 
 // Text area expansion
 document.querySelectorAll('textarea').forEach(textarea => {
@@ -876,7 +905,9 @@ const lineSeries = chart.addAreaSeries({
 });
 
 chart.timeScale().applyOptions({
+    rightOffset: -0.7,
     timeVisible: true,
+    fixRightEdge: true,
 });
 
 // ResizeObserver to handle container size changes
@@ -1017,4 +1048,78 @@ document.getElementById('demo-data').addEventListener('click', function () {
     } else {
         console.log("Demo data loading canceled by user.");
     }
+});
+
+///////////////////////////////////////////////////STATS
+function calculateSharpeRatio() {
+    const rows = document.querySelectorAll('.data-row');
+    const riskFreeRate = 0.01; 
+    let returns = [];
+    
+    rows.forEach(row => {
+        const changeElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+        if (changeElement) {
+            const tradeReturn = parseFloat(changeElement.textContent);
+            if (!isNaN(tradeReturn)) {
+                returns.push(tradeReturn);
+            }
+        }
+    });
+
+    if (returns.length > 0) {
+        const averageReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+        const excessReturns = returns.map(r => r - riskFreeRate);
+        const standardDeviation = Math.sqrt(excessReturns.map(r => Math.pow(r - averageReturn, 2)).reduce((a, b) => a + b, 0) / returns.length);
+        return standardDeviation !== 0 ? (averageReturn - riskFreeRate) / standardDeviation : 0;
+    } else {
+        return 0;
+    }
+}
+
+function calculateTradeStats() {
+    const rows = document.querySelectorAll('.data-row');
+    let winCount = 0;
+    let lossCount = 0;
+
+    rows.forEach(row => {
+        const rowId = row.dataset.rowId;
+        const changeElement = row.querySelector(`[name="changeD-${rowId}"]`);
+        if (changeElement) {
+            const changeValue = parseFloat(changeElement.textContent);
+            if (!isNaN(changeValue)) {
+                if (changeValue > 0) {
+                    winCount++;
+                } else if (changeValue < 0) {
+                    lossCount++;
+                }
+            }
+        }
+    });
+
+    const totalCount = winCount + lossCount;
+    const hitRate = totalCount > 0 ? (winCount / totalCount) * 100 : 0;
+
+    return {
+        hitRate: hitRate,
+        winCount: winCount,
+        lossCount: lossCount
+    };
+}
+
+
+function displayTradeStats() {
+    const tradeStats = calculateTradeStats();
+    document.getElementById('hit-rate').textContent = `Hits: ${tradeStats.hitRate.toFixed(0)}%`;
+    document.getElementById('win-rate').textContent = `Wins: ${tradeStats.winCount}`;
+    document.getElementById('loss-rate').textContent = `Losses: ${tradeStats.lossCount}`;
+    document.getElementById('sharpe-ratio').textContent = `Sharpe: ${calculateSharpeRatio().toFixed(2)}`;
+}
+
+
+document.addEventListener('initialCapitalSaved', function () {
+    setTimeout(displayTradeStats, 1000); // Delay of 1000 milliseconds (1 second)
+
+    document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
+        input.addEventListener('input', displayTradeStats);
+    });
 });
