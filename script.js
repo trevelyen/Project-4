@@ -80,7 +80,7 @@ function loadData() {
                 }
 
                 cursor.continue();
-                
+
             }
         };
 
@@ -312,10 +312,10 @@ function getCurrentDateTime() {
 
 function datesAreEqualUpToMinute(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate() &&
-           date1.getHours() === date2.getHours() &&
-           date1.getMinutes() === date2.getMinutes();
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate() &&
+        date1.getHours() === date2.getHours() &&
+        date1.getMinutes() === date2.getMinutes();
 }
 
 
@@ -360,7 +360,7 @@ document.querySelectorAll('.image-paste-area').forEach(area => {
                 reader.onload = (e) => {
                     area.innerHTML = `<img src="${e.target.result}" alt="Pasted Image">`;
                     // Change the background color as soon as the image is inserted
-                    area.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
+                    area.style.backgroundColor = '#ADD8E61f';
                 };
                 reader.readAsDataURL(blob);
             }
@@ -610,6 +610,8 @@ function clearIndexedDB() {
     clearRequest.onsuccess = function (event) {
         console.log("IndexedDB cleared successfully");
         resetAllCells();
+        // Remove the red border from the Save button
+        document.getElementById('save-button').classList.remove('pulseSave');
     };
 
     clearRequest.onerror = function (event) {
@@ -643,6 +645,8 @@ function resetAllCells() {
     });
 
     updateAllBackgroundColors();
+    displayTradeStats();
+    updateTableAndButtonState();
 }
 
 function updateOrDeleteImageDataInIndexedDB(rowId) {
@@ -693,7 +697,7 @@ function addTooltipToCellsContainingImages() {
                 let cell = document.querySelector(`div[name="snip-${data.id}"]`);
                 if (cell) {
                     cell.setAttribute('title', 'ctrl and click to erase image');
-                    cell.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
+                    cell.style.backgroundColor = '#ADD8E61f';
                 }
             }
             cursor.continue();
@@ -717,7 +721,7 @@ function setBackgroundColorForImageCells() {
             if (data.snip && data.snip.includes('<img')) {
                 let cell = document.querySelector(`div[name="snip-${data.id}"]`);
                 if (cell) {
-                    cell.style.backgroundColor = '#ADD8E61f'; // Example color, change as needed
+                    cell.style.backgroundColor = '#ADD8E61f';
                 }
             }
             cursor.continue();
@@ -753,6 +757,8 @@ function saveDataToFile() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        unsavedChanges = false;
+        document.getElementById('save-button').classList.remove('pulseSave');
     };
 
     request.onerror = function (event) {
@@ -1037,14 +1043,14 @@ function updateAllBackgroundColors() {
 document.addEventListener('initialCapitalSaved', updateAllBackgroundColors);
 
 document.getElementById('demo-data').addEventListener('click', function () {
-    console.log("Button clicked"); 
+    console.log("Button clicked");
     if (confirm("All data will be lost?!")) {
         fetch('data.tj')
-        .then(response => response.json())
-        .then(data => {
-            saveDataToIndexedDB(data);
-        })
-        .catch(error => console.error('Error loading demo data:', error));
+            .then(response => response.json())
+            .then(data => {
+                saveDataToIndexedDB(data);
+            })
+            .catch(error => console.error('Error loading demo data:', error));
     } else {
         console.log("Demo data loading canceled by user.");
     }
@@ -1053,9 +1059,9 @@ document.getElementById('demo-data').addEventListener('click', function () {
 ///////////////////////////////////////////////////STATS
 function calculateSharpeRatio() {
     const rows = document.querySelectorAll('.data-row');
-    const riskFreeRate = 0.01; 
+    const riskFreeRate = 0.01;
     let returns = [];
-    
+
     rows.forEach(row => {
         const changeElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
         if (changeElement) {
@@ -1109,7 +1115,7 @@ function calculateTradeStats() {
 
 function displayTradeStats() {
     const tradeStats = calculateTradeStats();
-    document.getElementById('hit-rate').textContent = `Hits: ${tradeStats.hitRate.toFixed(0)}%`;
+    document.getElementById('hit-rate').textContent = `Hit rate: ${tradeStats.hitRate.toFixed(0)}%`;
     document.getElementById('win-rate').textContent = `Wins: ${tradeStats.winCount}`;
     document.getElementById('loss-rate').textContent = `Losses: ${tradeStats.lossCount}`;
     document.getElementById('sharpe-ratio').textContent = `Sharpe: ${calculateSharpeRatio().toFixed(2)}`;
@@ -1122,4 +1128,40 @@ document.addEventListener('initialCapitalSaved', function () {
     document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
         input.addEventListener('input', displayTradeStats);
     });
+});
+
+
+function updateTableAndButtonState() {
+    const initialCapitalInput = document.getElementById('initial-capital');
+    const dataTable = document.getElementById('data-table');
+    const editButton = document.getElementById('edit-button');
+
+    if (initialCapitalInput.value.trim() === '') {
+        dataTable.classList.add('disabled');
+        editButton.classList.add('pulse');
+        initialCapitalInput.classList.add('flashing-border');
+    } else {
+        dataTable.classList.remove('disabled');
+        editButton.classList.remove('pulse');
+        initialCapitalInput.classList.remove('flashing-border');
+    }
+}
+
+// Ensure this function is called on page load and input changes
+document.addEventListener('DOMContentLoaded', function() {
+    const initialCapitalInput = document.getElementById('initial-capital');
+    initialCapitalInput.addEventListener('input', updateTableAndButtonState);
+    setTimeout(updateTableAndButtonState, 1000); // Initialize state
+});
+
+let unsavedChanges = false;
+
+function setUnsavedChanges() {
+    unsavedChanges = true;
+    document.getElementById('save-button').classList.add('pulseSave');
+}
+
+// Example of marking changes as unsaved
+document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', setUnsavedChanges);
 });

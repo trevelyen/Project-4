@@ -18,6 +18,11 @@
                 <div id="editModal" class="modal">
                     <div class="editModal-content">
                         <span class="close" style="display: none;">&times;</span>
+                        
+                        <div id="init-container">
+                            <label for="initial-capital">start capital</label>
+                            <input type="number" id="initial-capital">
+                        </div>
                         <h2>checklist</h2>
                         <form id="tooltip-form">
                             <label for="tooltip-1">•</label>
@@ -31,22 +36,25 @@
                             <label for="tooltip-5">•</label>
                             <input type="text" id="tooltip-5" name="tooltip-5" class="tool-class"><br>
                         </form>
+
                         <button id="demo-data" class="option-button">demo data</button>
                     </div>
                 </div>
-                <div id="button-container">
-                    <div id="menu-container">
-                        <button class="option-button" id="open-button">open</button>
-                        <button class="option-button" id="clear-button">clear</button>
-                        <button class="option-button" id="edit-button">edit</button>
-                        <button class="option-button" id="save-button">save</button>
-                        <input type="file" id="file-input" style="display: none;" accept=".tj">
+                <div id="top-container">
+                    <div id="button-container">
+
+                        <div id="menu-container">
+                            <button class="option-button" id="open-button">open</button>
+                            <button class="option-button" id="clear-button">clear</button>
+                            <button class="option-button" id="edit-button">edit</button>
+                            <button class="option-button" id="save-button">save</button>
+                            <input type="file" id="file-input" style="display: none;" accept=".tj">
+                        </div>
+
+
+                            <button id="toggle-button" tabindex="-1"></button>
                     </div>
-                    <div id="init-container">
-                        <label for="initial-capital">start capital</label>
-                        <input type="number" id="initial-capital">
-                        <button id="toggle-button" tabindex="-1"></button>
-                    </div>
+
                 </div>
                 <div id="table-container-outer">
                     <div id="table-container">
