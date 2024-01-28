@@ -92,31 +92,64 @@ body {
     margin: 3px;
     border-radius: 10px;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
     flex-grow: 1;
-    height: 100%;
     border-radius: 5px;
     transition: width 0.5s ease;
     will-change: width;
 }
 
+#stat-container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 50%;
+    background: linear-gradient(to left, rgba(75, 130, 160, 0.39), rgba(5, 17, 41, 0.308));
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#statz-container {
+    margin-right: 10%;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.stat-box {
+    background: linear-gradient(to left, rgba(15, 40, 65, 0.63), rgba(5, 17, 41, 0.534));
+    width: 150px;
+    color: rgb(122, 181, 204);
+    height: 20px;
+    line-height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin: 5px;
+}
+
 #equity-container {
     width: 90%;
-    height: 17vw;
+    height: 40%;
     background-color: #01091d00;
     border-radius: 10px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin: 10px;
+    margin-top: 30px;
 }
 
 #chart-container {
     padding: 0;
     margin: 0;
-    margin-top: 100px;
     width: 100%;
     height: 100%;
     position: relative;
@@ -149,13 +182,11 @@ body {
     background: linear-gradient(to left, rgba(15, 40, 65, 0.055), rgba(5, 17, 41, 0.089));
     color: rgba(39, 132, 160, 0.959);
     flex: 1;
-    width: 70px;
+    width: 65px;
     height: 50px;
     border-radius: 10px;
     transition: all 0.3s ease;
 }
-
-
 
 #init-container {
     display: flex;
@@ -180,12 +211,14 @@ body {
 }
 
 #toggle-button {
+    margin-top: 10px;
     margin-right: 10px;
     background: linear-gradient(to left, rgba(15, 40, 65, 0.034), rgba(5, 17, 41, 0.39));
     color: rgba(209, 202, 194, 0.623);
     border-radius: 5px;
     cursor: pointer;
     width: 20px;
+    height: 40px;
     border-width: 1.5px;
     border-color: #216e5750;
 }
@@ -311,7 +344,6 @@ label:focus {
     margin-top: 4%;
     text-align: left;
     margin-bottom: 6%;
-
 }
 
 #tooltip-form input[type="text"] {
@@ -326,7 +358,11 @@ label:focus {
 
 #tooltip-form label {
     font-size: medium;
-    color: #1385d160;
+    color: #1385d1;
+}
+
+#stat-container label {
+    color: rgba(153, 213, 218, 0.767);
 }
 
 #data-table th,
@@ -558,54 +594,57 @@ textarea.expanded {
     margin-right: 100px;
 }
 
-#stat-container {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    height: 50%;
-    background: linear-gradient(to left, rgba(75, 130, 160, 0.39), rgba(5, 17, 41, 0.308));
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 20px;
-}
-
-.stat-box {
-    background: transparent; /*linear-gradient(to left, rgba(15, 40, 65, 0.055), rgba(5, 17, 41, 0.089));*/
-    width: 60%;
-    color: rgb(102, 170, 197);
-    height: 50px;
-    line-height: 50px;
-    border-radius: 10px;
-    text-align: left;
-    justify-content: center;
-    padding: 5px;
-    margin: 5px;
-}
-
 .disabled {
-    pointer-events: none; /* Disable interactions */
-    opacity: 0.5; /* Greyed out look */
+    pointer-events: none;
+    opacity: 0.5;
 }
+
 .pulse {
     animation: pulseAnimation 2s infinite;
 }
+
 .pulseSave {
     animation: pulseAnimationSave 5s infinite;
 }
+
 @keyframes pulseAnimation {
-    0% { border-color: rgba(255, 0, 0, 0.39); }
-    50% { border-color: #216e5750; }
-    100% { border-color: rgba(255, 0, 0, 0.404); }
+    0% {
+        border-color: rgba(255, 0, 0, 0.39);
+    }
+
+    50% {
+        border-color: #216e5750;
+    }
+
+    100% {
+        border-color: rgba(255, 0, 0, 0.404);
+    }
 }
+
 @keyframes pulseAnimationSave {
-    0% { border-color: rgba(255, 0, 0, 0.199); }
-    50% { border-color: #216e5750; }
-    100% { border-color: rgba(255, 0, 0, 0.233); }
+    0% {
+        border-color: rgba(255, 0, 0, 0.199);
+    }
+
+    50% {
+        border-color: #216e5750;
+    }
+
+    100% {
+        border-color: rgba(255, 0, 0, 0.233);
+    }
 }
+
 @keyframes flash {
-    0%, 100% { border-color: rgba(0, 255, 98, 0.555); }
-    50% { border-color: #216e5750; }
+
+    0%,
+    100% {
+        border-color: rgba(0, 255, 98, 0.555);
+    }
+
+    50% {
+        border-color: #216e5750;
+    }
 }
 
 .flashing-border {
@@ -614,60 +653,192 @@ textarea.expanded {
 
 
 @media screen and (max-width: 844px) {
-    html, body {
+
+    html,
+    body {
         overflow-x: hidden;
     }
+
     #space-background {
         background-size: cover !important;
         height: 100%;
     }
+
     #main-container {
         flex-direction: column;
         overflow-y: auto;
         overflow-x: hidden;
         align-items: center;
     }
-    #entry-container{
+
+    #entry-container {
         max-width: 100%;
         width: 95%;
     }
+
     .option-button {
         width: 65px;
         height: 50px;
     }
+
     #toggle-button {
         display: none;
     }
+
     #table-container-outer {
         margin: 10px;
     }
+
     #table-container {
         border-radius: 10px;
         height: 95%;
     }
+
     #data-table {
         padding: 0;
         margin: 0;
-        
+
     }
+
     .editModal-content {
         width: 70%;
         margin-top: 40%;
     }
+
     #stats-container {
         display: none;
         max-width: 100%;
         width: 95%;
         height: 30%;
     }
+
     #stat-container {
         width: 80%;
         height: 500px;
     }
-    
+
+}
+
+@media screen and (min-width: 1920px) and (max-width: 2559px) {
+    #table-container {
+        width: 100%;
+    }
+    #data-table {
+        min-width: 1580px;
+        scale: 0.88;
+    }
+    .checklist {
+        gap: 5px;
+        margin-right: 10px;
+    }
+    #data-table th:nth-child(4),
+    #data-table td:nth-child(4) {
+        width: 140px;
+    }
+    .stat-box {
+        width: 120px;
+        height: 14px;
+        font-size: small
+    }
+    .entry-container {
+        max-width: 65%;
+    }
+    #entry-container {
+        width:75%;
+    }
 }
 
 
+@media screen and (min-width: 3840px) {
+    .option-button {
+        width: 120px;
+        height: 80px;
+    }
+
+    #toggle-button {
+        width: 40px;
+        height: 60px;
+    }
+
+    #table-container-outer {
+        width: 100%;
+
+    }
+
+    #data-table {
+        min-width: 2950px;
+    }
+
+    #data-table th {
+        font-size: large;
+    }
+    #data-table td:nth-child(1) {
+        font-size: large;
+    }
+
+    #data-table td input {
+        font-size: large;
+    }
+
+    #data-table td span {
+        font-size: large;
+    }
+    td.checklist {
+        display: flex;
+        margin-left: 70px;
+    }
+
+    .checklist {
+        gap: 10px;
+        margin-top: 4px;
+        max-width: 50px;
+        margin-left: 90px;
+    }
+
+    .checkmark {
+        width: 25px;
+        height: 25px;
+    }
+
+    #data-table th:nth-child(2),
+    #data-table td:nth-child(2),
+    #data-table th:nth-child(18),
+    #data-table td:nth-child(18) {
+        max-width: 90px;
+    }
+
+    #data-table th:nth-child(3),
+    #data-table td:nth-child(3) {
+        max-width: 0px;
+        padding-left: 40px;
+    }
+
+    #data-table th:nth-child(4),
+    #data-table td:nth-child(4) {
+        max-width: 40px;
+    }
+
+    #data-table th:nth-child(5),
+    #data-table td:nth-child(5),
+    #data-table th:nth-child(6),
+    #data-table td:nth-child(6),
+    #data-table th:nth-child(7),
+    #data-table td:nth-child(7) {
+        max-width: 10px;
+    }
+    #data-table th:nth-child(19),
+    #data-table td:nth-child(19) {
+        max-width: 20px;
+    }
+    #stat-container {
+        font-size: larger;
+    }
+
+    .stat-box {
+        width: 200px;
+        height: 40px;
+    }
+}
 
 
 
@@ -708,16 +879,19 @@ textarea.expanded {
         background-position: 0 0;
     }
 }
+
 @media screen and (max-width: 990px) {
     #space-background {
         background-size: 300%;
     }
 }
+
 @media screen and (max-width: 1100px) {
     #space-background {
         background-size: 250%;
     }
 }
+
 @media screen and (max-width: 1800px) {
     #space-background {
         background-size: 200%;

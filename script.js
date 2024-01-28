@@ -1057,31 +1057,6 @@ document.getElementById('demo-data').addEventListener('click', function () {
 });
 
 ///////////////////////////////////////////////////STATS
-function calculateSharpeRatio() {
-    const rows = document.querySelectorAll('.data-row');
-    const riskFreeRate = 0.01;
-    let returns = [];
-
-    rows.forEach(row => {
-        const changeElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
-        if (changeElement) {
-            const tradeReturn = parseFloat(changeElement.textContent);
-            if (!isNaN(tradeReturn)) {
-                returns.push(tradeReturn);
-            }
-        }
-    });
-
-    if (returns.length > 0) {
-        const averageReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
-        const excessReturns = returns.map(r => r - riskFreeRate);
-        const standardDeviation = Math.sqrt(excessReturns.map(r => Math.pow(r - averageReturn, 2)).reduce((a, b) => a + b, 0) / returns.length);
-        return standardDeviation !== 0 ? (averageReturn - riskFreeRate) / standardDeviation : 0;
-    } else {
-        return 0;
-    }
-}
-
 function calculateTradeStats() {
     const rows = document.querySelectorAll('.data-row');
     let winCount = 0;
@@ -1112,18 +1087,354 @@ function calculateTradeStats() {
     };
 }
 
+function calculateSharpeRatio() {
+    const rows = document.querySelectorAll('.data-row');
+    const riskFreeRate = 0.01;
+    let returns = [];
+
+    rows.forEach(row => {
+        const changeElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+        if (changeElement) {
+            const tradeReturn = parseFloat(changeElement.textContent);
+            if (!isNaN(tradeReturn)) {
+                returns.push(tradeReturn);
+            }
+        }
+    });
+
+    if (returns.length > 0) {
+        const averageReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+        const excessReturns = returns.map(r => r - riskFreeRate);
+        const standardDeviation = Math.sqrt(excessReturns.map(r => Math.pow(r - averageReturn, 2)).reduce((a, b) => a + b, 0) / returns.length);
+        return standardDeviation !== 0 ? (averageReturn - riskFreeRate) / standardDeviation : 0;
+    } else {
+        return 0;
+    }
+}
+
+function calculateSortinoRatio() {
+    const rows = document.querySelectorAll('.data-row');
+    const riskFreeRate = 0.01; // Example risk-free rate (1%)
+    let returns = [];
+    let negativeReturnsSquaredSum = 0;
+
+    rows.forEach(row => {
+        const returnElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+
+        if (returnElement) {
+            const tradeReturn = parseFloat(returnElement.textContent);
+            if (!isNaN(tradeReturn)) {
+                returns.push(tradeReturn);
+                if (tradeReturn < 0) {
+                    negativeReturnsSquaredSum += Math.pow(tradeReturn, 2);
+                }
+            }
+        }
+    });
+
+    const averageReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+    const downsideDeviation = Math.sqrt(negativeReturnsSquaredSum / returns.length);
+
+    return (averageReturn - riskFreeRate) / downsideDeviation;
+}
+
+function calculateTotalGains() {
+    const rows = document.querySelectorAll('.data-row');
+    let totalGainD = 0;
+    let totalGainP = 0; // To accumulate percentage gains
+
+    let initialInvestment = parseFloat(document.getElementById('initial-capital').value);
+    if (isNaN(initialInvestment)) {
+        initialInvestment = 0; // Default to 0 if input is not a number
+    }
+
+    rows.forEach(row => {
+        const changeElementD = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+        const changeElementP = row.querySelector(`[name="changeP-${row.dataset.rowId}"]`);
+
+        if (changeElementD) {
+            const changeValueD = parseFloat(changeElementD.textContent);
+            if (!isNaN(changeValueD)) {
+                totalGainD += changeValueD;
+            }
+        }
+
+        if (changeElementP) {
+            const changeValueP = parseFloat(changeElementP.textContent);
+            if (!isNaN(changeValueP)) {
+                totalGainP += changeValueP;
+            }
+        }
+    });
+
+    return {
+        totalGainD: totalGainD,
+        totalGainP: totalGainP
+    };
+}
+
+function calculateLSRatio() {
+    const rows = document.querySelectorAll('.data-row');
+    let longCount = 0;
+    let shortCount = 0;
+
+    rows.forEach(row => {
+        const entryElement = row.querySelector(`input[name="entry-${row.dataset.rowId}"]`);
+        const stopElement = row.querySelector(`input[name="stop-${row.dataset.rowId}"]`);
+
+        if (entryElement && stopElement) {
+            const entryValue = parseFloat(entryElement.value);
+            const stopValue = parseFloat(stopElement.value);
+
+            if (!isNaN(entryValue) && !isNaN(stopValue)) {
+                if (stopValue < entryValue) {
+                    longCount++;
+                } else if (stopValue > entryValue) {
+                    shortCount++;
+                }
+            }
+        }
+    });
+    console.log("Long trades count:", longCount);
+    console.log("Short trades count:", shortCount);
+    const lsRatio = shortCount > 0 ? longCount / shortCount : 0;
+
+    return lsRatio;
+}
+function calculateAvgWinLoss() {
+    const rows = document.querySelectorAll('.data-row');
+    let totalWinAmount = 0, totalLossAmount = 0;
+    let totalWinPercentage = 0, totalLossPercentage = 0;
+    let winCount = 0, lossCount = 0;
+
+    rows.forEach(row => {
+        const amountElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+        const sizeElement = row.querySelector(`input[name="size-${row.dataset.rowId}"]`);
+
+        if (amountElement && sizeElement) {
+            const amountValue = parseFloat(amountElement.textContent);
+            const sizeValue = parseFloat(sizeElement.value);
+
+            if (!isNaN(amountValue) && !isNaN(sizeValue) && sizeValue !== 0) {
+                const percentageChange = (amountValue / sizeValue) * 100;
+
+                if (amountValue > 0) {
+                    totalWinAmount += amountValue;
+                    totalWinPercentage += percentageChange;
+                    winCount++;
+                } else if (amountValue < 0) {
+                    totalLossAmount += amountValue;
+                    totalLossPercentage += percentageChange;
+                    lossCount++;
+                }
+            }
+        }
+    });
+
+    const avgWin = winCount > 0 ? totalWinAmount / winCount : 0;
+    const avgLoss = lossCount > 0 ? totalLossAmount / lossCount : 0; // Convert to positive for display
+    const avgWinPercentage = winCount > 0 ? totalWinPercentage / winCount : 0;
+    const avgLossPercentage = lossCount > 0 ? -totalLossPercentage / lossCount : 0; // Negate to make positive
+
+    return {
+        avgWin: avgWin,
+        avgLoss: -avgLoss, // Negate to make the loss a positive number for display
+        avgWinPercentage: avgWinPercentage,
+        avgLossPercentage: avgLossPercentage
+    };
+}
+
+function calculateProfitFactor() {
+    const rows = document.querySelectorAll('.data-row');
+    let totalWinAmount = 0;
+    let totalLossAmount = 0;
+
+    rows.forEach(row => {
+        const amountElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+
+        if (amountElement) {
+            const amountValue = parseFloat(amountElement.textContent);
+            if (!isNaN(amountValue)) {
+                if (amountValue > 0) {
+                    totalWinAmount += amountValue;
+                } else if (amountValue < 0) {
+                    totalLossAmount += Math.abs(amountValue); // Convert losses to positive for calculation
+                }
+            }
+        }
+    });
+
+    // Avoid division by zero; if there are no losses, set profit factor to total wins
+    const profitFactor = totalLossAmount > 0 ? totalWinAmount / totalLossAmount : totalWinAmount;
+
+    return profitFactor;
+}
+
+function calculateMaxDrawdown() {
+    const rows = document.querySelectorAll('.data-row');
+    let peak = 0;
+    let maxDrawdown = 0;
+
+    rows.forEach(row => {
+        const portfolioValueElement = row.querySelector(`input[name="balance-${row.dataset.rowId}"]`);
+
+        if (portfolioValueElement) {
+            const portfolioValue = parseFloat(portfolioValueElement.value);
+            if (!isNaN(portfolioValue)) {
+                if (portfolioValue > peak) {
+                    peak = portfolioValue; // Update peak
+                }
+                const drawdown = peak - portfolioValue;
+                if (peak > 0) {
+                    const drawdownPercentage = (drawdown / peak) * 100;
+                    maxDrawdown = Math.max(maxDrawdown, drawdownPercentage); // Update max drawdown
+                }
+            }
+        }
+    });
+
+    return maxDrawdown; // Returns the maximum drawdown in percentage
+}
+
+function calculateTotalTrades() {
+    const rows = document.querySelectorAll('.data-row');
+    let tradeCount = 0;
+
+    rows.forEach(row => {
+        const balanceElement = row.querySelector(`input[name^="balance-"]`); // Selects any input where name starts with "balance-"
+
+        if (balanceElement && balanceElement.value) {
+            tradeCount++;
+        }
+    });
+
+    return tradeCount;
+}
+
+function calculateAvgWinLossDuration() {
+    const rows = document.querySelectorAll('.data-row');
+    let totalWinDuration = 0;
+    let totalLossDuration = 0;
+    let winCount = 0;
+    let lossCount = 0;
+
+    rows.forEach(row => {
+        const openTimeElement = row.querySelector(`input[name="time-${row.dataset.rowId}"]`);
+        const closeTimeElement = row.querySelector(`input[name="close-${row.dataset.rowId}"]`);
+        const amountElement = row.querySelector(`[name="changeD-${row.dataset.rowId}"]`);
+
+        if (openTimeElement && closeTimeElement && amountElement) {
+            const openTime = new Date(openTimeElement.value);
+            const closeTime = new Date(closeTimeElement.value);
+            const amountValue = parseFloat(amountElement.textContent);
+
+            if (!isNaN(openTime.getTime()) && !isNaN(closeTime.getTime()) && !isNaN(amountValue)) {
+                const duration = (closeTime - openTime) / 3600000; // Duration in hours
+
+                if (amountValue > 0) {
+                    totalWinDuration += duration;
+                    winCount++;
+                } else if (amountValue < 0) {
+                    totalLossDuration += duration;
+                    lossCount++;
+                }
+            }
+        }
+    });
+
+    const avgWinDuration = winCount > 0 ? totalWinDuration / winCount : 0;
+    const avgLossDuration = lossCount > 0 ? totalLossDuration / lossCount : 0;
+
+    return {
+        avgWinDuration: avgWinDuration,
+        avgLossDuration: avgLossDuration
+    };
+}
+
+function calculateApproximateRiskRewardRatio() {
+    const averages = calculateAvgWinLoss();
+    const avgWin = averages.avgWin; // Proxy for average reward
+    const avgLoss = averages.avgLoss; // Proxy for average risk
+
+    // Avoid division by zero; if avgLoss is zero, return avgWin
+    const riskRewardRatio = avgLoss > 0 ? avgWin / avgLoss : avgWin;
+
+    return riskRewardRatio;
+}
+
+function calculateAverageTradesPerDay() {
+    const rows = document.querySelectorAll('.data-row');
+    const uniqueDates = new Set();
+    let totalTrades = 0;
+
+    rows.forEach(row => {
+        const dateElement = row.querySelector(`input[name="time-${row.dataset.rowId}"]`); // Replace with your actual date field selector
+
+        if (dateElement && dateElement.value) {
+            uniqueDates.add(dateElement.value.split('T')[0]); // Extract and add the date part to the set
+            totalTrades++;
+        }
+    });
+
+    const totalTradingDays = uniqueDates.size;
+    const avgTradesPerDay = totalTradingDays > 0 ? totalTrades / totalTradingDays : 0;
+
+    return avgTradesPerDay;
+}
+
+function calculateExpectancy() {
+    const tradeStats = calculateTradeStats();
+    const averages = calculateAvgWinLoss();
+
+    const PW = tradeStats.winCount / (tradeStats.winCount + tradeStats.lossCount);
+    const PL = tradeStats.lossCount / (tradeStats.winCount + tradeStats.lossCount);
+    const AW = averages.avgWin;
+    const AL = averages.avgLoss;
+
+    const expectancy = (PW * AW) - (PL * AL);
+    return expectancy;
+}
+
 
 function displayTradeStats() {
+    const totalTrades = calculateTotalTrades();
     const tradeStats = calculateTradeStats();
-    document.getElementById('hit-rate').textContent = `Hit rate: ${tradeStats.hitRate.toFixed(0)}%`;
-    document.getElementById('win-rate').textContent = `Wins: ${tradeStats.winCount}`;
-    document.getElementById('loss-rate').textContent = `Losses: ${tradeStats.lossCount}`;
-    document.getElementById('sharpe-ratio').textContent = `Sharpe: ${calculateSharpeRatio().toFixed(2)}`;
+    const expectancy = calculateExpectancy();
+    const profitFactor = calculateProfitFactor();
+    const maxDrawdown = calculateMaxDrawdown();
+    const riskRewardRatio = calculateApproximateRiskRewardRatio();
+    const lsRatio = calculateLSRatio();
+    const averages = calculateAvgWinLoss();
+    const sharpeRatio = calculateSharpeRatio();
+    const sortinoRatio = calculateSortinoRatio();
+    const totalGains = calculateTotalGains();
+    const durations = calculateAvgWinLossDuration();
+    const avgTradesPerDay = calculateAverageTradesPerDay();
+
+    document.getElementById('total-trades').textContent = totalTrades;
+    document.getElementById('hit-rate').textContent = `${tradeStats.hitRate.toFixed(0)}%`;
+    document.getElementById('trade-expect').textContent = `$${expectancy.toFixed(2)}`;
+    document.getElementById('profit-factor').textContent = profitFactor.toFixed(2);
+    document.getElementById('max-dd').textContent = `${maxDrawdown.toFixed(2)}%`;
+    document.getElementById('rr-ratio').textContent = riskRewardRatio.toFixed(2);
+    document.getElementById('ls-ratio').textContent = lsRatio.toFixed(2);
+    document.getElementById('avg-win').textContent = `$${averages.avgWin.toFixed(2)} / ${averages.avgWinPercentage.toFixed(1)}%`;
+    document.getElementById('avg-loss').textContent = `$${averages.avgLoss.toFixed(2)} / ${averages.avgLossPercentage.toFixed(1)}%`;
+    document.getElementById('sharpe-ratio').textContent = `${sharpeRatio.toFixed(2)}`;
+    document.getElementById('sort-ratio').textContent = sortinoRatio.toFixed(2);
+    document.getElementById('total-gainD').textContent = `$${totalGains.totalGainD.toFixed(0)}`;
+    document.getElementById('total-gainP').textContent = `${totalGains.totalGainP.toFixed(0)}%`;
+    document.getElementById('avghold-win').textContent = `${durations.avgWinDuration.toFixed(2)} hours`;
+    document.getElementById('avghold-loss').textContent = `${durations.avgLossDuration.toFixed(2)} hours`;
+    document.getElementById('avg-tradespd').textContent = avgTradesPerDay.toFixed(2);
+    //document.getElementById('win-rate').textContent = `${tradeStats.winCount}`;
+    //document.getElementById('loss-rate').textContent = `${tradeStats.lossCount}`;
+
 }
 
 
 document.addEventListener('initialCapitalSaved', function () {
-    setTimeout(displayTradeStats, 1000); // Delay of 1000 milliseconds (1 second)
+    setTimeout(displayTradeStats, 1000);
 
     document.querySelectorAll('.data-row td:nth-child(12) input[type="number"]').forEach(input => {
         input.addEventListener('input', displayTradeStats);
