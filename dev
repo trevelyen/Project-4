@@ -1,0 +1,118 @@
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+</head>
+<body>
+  <div class="dark min-h-screen bg-gray-900 p-10 flex flex-col gap-10">
+    <header class="flex justify-between items-center">
+      <h1 class="text-4xl text-white font-bold">
+        Trading Journal
+      </h1>
+      <div class="flex gap-4">
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-white h-10 px-4 py-2 bg-green-500 hover:bg-green-600">
+          <i class="fas fa-plus mr-2"></i> Add New Entry
+        </button>
+      </div>
+    </header>
+    <main class="flex flex-col gap-6">
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="rounded-lg border bg-gray-800 text-white shadow-sm p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">Total ROI</h3>
+            <p class="text-2xl font-bold text-green-400 mt-2">+15.3%</p>
+          </div>
+          <div class="mt-4">
+            <i class="fas fa-chart-line text-green-400 text-3xl"></i>
+          </div>
+        </div>
+        <div class="rounded-lg border bg-gray-800 text-white shadow-sm p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">PNL</h3>
+            <p class="text-2xl font-bold text-red-400 mt-2">-2.1%</p>
+          </div>
+          <div class="mt-4">
+            <i class="fas fa-chart-area text-red-400 text-3xl"></i>
+          </div>
+        </div>
+        <div class="rounded-lg border bg-gray-800 text-white shadow-sm p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">AUM</h3>
+            <p class="text-2xl font-bold text-yellow-400 mt-2">$1,234,567</p>
+          </div>
+          <div class="mt-4">
+            <i class="fas fa-wallet text-yellow-400 text-3xl"></i>
+          </div>
+        </div>
+      </section>
+      <section class="mt-6">
+        <div class="rounded-lg border bg-gray-800 text-white shadow-sm p-6">
+          <h3 class="text-lg font-semibold mb-4">Portfolio Growth</h3>
+          <!-- Placeholder for the area chart -->
+          <div class="w-full h-64 bg-gray-700 rounded-md"></div>
+        </div>
+      </section>
+      <section class="mt-6 overflow-auto rounded-lg shadow">
+        <table class="w-full text-sm text-left text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-700">
+            <tr>
+              <th scope="col" class="px-6 py-3">
+                Date
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Pair
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Entry Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Exit Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Profit/Loss
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Comments
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Screenshots
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700">
+              <td class="px-6 py-4">
+                04/01/2023
+              </td>
+              <td class="px-6 py-4">
+                EUR/USD
+              </td>
+              <td class="px-6 py-4">
+                1.12345
+              </td>
+              <td class="px-6 py-4">
+                1.12445
+              </td>
+              <td class="px-6 py-4 text-green-500">
+                +100
+              </td>
+              <td class="px-6 py-4">
+                Good entry on support bounce
+              </td>
+              <td class="px-6 py-4">
+                <i class="fas fa-image text-blue-500"></i>
+              </td>
+            </tr>
+            <!-- Repeat for each entry -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+    <footer class="mt-6 flex justify-end">
+      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-white h-10 px-4 py-2 bg-green-500 hover:bg-green-600">
+        <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+      </button>
+    </footer>
+  </div>
+</body>
+</html>
