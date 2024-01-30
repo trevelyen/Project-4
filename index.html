@@ -3693,83 +3693,87 @@
                 <div id="resize-handle"></div>
             </div>
             <div id="stats-container">
-                <div id="stat-container">
-                    <div id="statz-container">
-                        <div class="stat-item">
-                            <label for="total-trades">Total Trades:</label>
-                            <div id="total-trades" class="stat-box"></div>
+                <div id="topstat-container">
+                        <div id="trade-container">
                         </div>
-                        <div class="stat-item">
-                            <label for="hit-rate">Hit Rate:</label>
-                            <div id="hit-rate" class="stat-box"></div>
+                        <div id="stat-container">
+                                <div id="statz-container">
+                                        <div class="stat-item">
+                                        <label for="total-trades">Total Trades:</label>
+                                        <div id="total-trades" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="hit-rate">Hit Rate:</label>
+                                        <div id="hit-rate" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="trade-expect">Expectancy:</label>
+                                        <div id="trade-expect" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="profit-factor">Profit Factor:</label>
+                                        <div id="profit-factor" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="max-dd">Max Drawdown:</label>
+                                        <div id="max-dd" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="rr-ratio">Approximate R:</label>
+                                        <div id="rr-ratio" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="ls-ratio">Long/Short Ratio:</label>
+                                        <div id="ls-ratio" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="avg-win">Average Win:</label>
+                                        <div id="avg-win" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="avg-loss">Average Loss:</label>
+                                        <div id="avg-loss" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="sharpe-ratio">Sharpe Ratio:</label>
+                                        <div id="sharpe-ratio" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="sort-ratio">Sortino Ratio:</label>
+                                        <div id="sort-ratio" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="total-gainD">Total Gain ($):</label>
+                                        <div id="total-gainD" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="total-gainP">Total Gain (%):</label>
+                                        <div id="total-gainP" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="avghold-win">Average Win Duration:</label>
+                                        <div id="avghold-win" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="avghold-loss">Average Loss Duration:</label>
+                                        <div id="avghold-loss" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="avg-tradespd">Average Trades/Day:</label>
+                                        <div id="avg-tradespd" class="stat-box"></div>
+                                        </div>
+                                        <!--
+                                        <div class="stat-item">
+                                        <label for="win-rate">Wins:</label>
+                                        <div id="win-rate" class="stat-box"></div>
+                                        </div>
+                                        <div class="stat-item">
+                                        <label for="loss-rate">Losses:</label>
+                                        <div id="loss-rate" class="stat-box"></div>
+                                        </div>
+                                        -->
+                                </div>
                         </div>
-                        <div class="stat-item">
-                            <label for="trade-expect">Expectancy:</label>
-                            <div id="trade-expect" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="profit-factor">Profit Factor:</label>
-                            <div id="profit-factor" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="max-dd">Max Drawdown:</label>
-                            <div id="max-dd" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="rr-ratio">Approximate R:</label>
-                            <div id="rr-ratio" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="ls-ratio">Long/Short Ratio:</label>
-                            <div id="ls-ratio" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="avg-win">Average Win:</label>
-                            <div id="avg-win" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="avg-loss">Average Loss:</label>
-                            <div id="avg-loss" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="sharpe-ratio">Sharpe Ratio:</label>
-                            <div id="sharpe-ratio" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="sort-ratio">Sortino Ratio:</label>
-                            <div id="sort-ratio" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="total-gainD">Total Gain ($):</label>
-                            <div id="total-gainD" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="total-gainP">Total Gain (%):</label>
-                            <div id="total-gainP" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="avghold-win">Average Win Duration:</label>
-                            <div id="avghold-win" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="avghold-loss">Average Loss Duration:</label>
-                            <div id="avghold-loss" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="avg-tradespd">Average Trades/Day:</label>
-                            <div id="avg-tradespd" class="stat-box"></div>
-                        </div>
-                        <!--
-                        <div class="stat-item">
-                            <label for="win-rate">Wins:</label>
-                            <div id="win-rate" class="stat-box"></div>
-                        </div>
-                        <div class="stat-item">
-                            <label for="loss-rate">Losses:</label>
-                            <div id="loss-rate" class="stat-box"></div>
-                        </div>
-                        -->
-                    </div>
                 </div>
                 <div id="equity-container">
                     <div id="chart-container"></div>

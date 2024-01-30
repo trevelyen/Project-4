@@ -242,7 +242,6 @@ document.getElementById('toggle-button').addEventListener('click', function () {
     }
 });
 
-
 // Disable animation if dragging resize
 const entryContainer = document.getElementById('entry-container');
 
@@ -261,6 +260,8 @@ entryContainer.addEventListener('mousedown', disableTransition);
 
 // Event listener for when resizing ends
 document.addEventListener('mouseup', enableTransition);
+
+
 
 // Enable press space bar on checkboxs
 document.querySelectorAll('.checklist label').forEach(label => {
@@ -1418,8 +1419,8 @@ function displayTradeStats() {
     document.getElementById('max-dd').textContent = `${maxDrawdown.toFixed(2)}%`;
     document.getElementById('rr-ratio').textContent = riskRewardRatio.toFixed(2);
     document.getElementById('ls-ratio').textContent = lsRatio.toFixed(2);
-    document.getElementById('avg-win').textContent = `$${averages.avgWin.toFixed(2)} / ${averages.avgWinPercentage.toFixed(1)}%`;
-    document.getElementById('avg-loss').textContent = `$${averages.avgLoss.toFixed(2)} / ${averages.avgLossPercentage.toFixed(1)}%`;
+    document.getElementById('avg-win').textContent = `$${averages.avgWin.toFixed(0)} / ${averages.avgWinPercentage.toFixed(1)}%`;
+    document.getElementById('avg-loss').textContent = `$${averages.avgLoss.toFixed(0)} / ${averages.avgLossPercentage.toFixed(1)}%`;
     document.getElementById('sharpe-ratio').textContent = `${sharpeRatio.toFixed(2)}`;
     document.getElementById('sort-ratio').textContent = sortinoRatio.toFixed(2);
     document.getElementById('total-gainD').textContent = `$${totalGains.totalGainD.toFixed(0)}`;
